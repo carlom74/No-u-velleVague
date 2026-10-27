@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Prototipo autocontenuto per acquisire e strutturare testi normativi da Normattiva." />
+  <title>Editor di novelle normative — prototipo</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brandmark">N</div>
+    <div><div class="eyebrow">PROTOTIPO 0.1</div><h1>Editor di novelle normative</h1></div>
+    <div class="top-actions"><span class="pill">Client-side</span><span class="pill">Nessun account</span></div>
+  </header>
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="step active"><span>1</span><div><strong>Fonte normativa</strong><small>Estremi e acquisizione</small></div></div>
+      <div class="step"><span>2</span><div><strong>Struttura</strong><small>Articoli e partizioni</small></div></div>
+      <div class="step"><span>3</span><div><strong>Intervento</strong><small>Novella normativa</small></div></div>
+      <div class="side-note"><strong>Principio di funzionamento</strong><p>Il testo viene acquisito dalla fonte, parsato nel browser e trasformato in un DOM navigabile. I dati restano nella sessione locale.</p></div>
+    </aside>
+    <section class="main-panel">
+      <div class="intro"><div class="eyebrow">PASSO 1 DI 3</div><h2>Seleziona l’atto da acquisire</h2><p>Indica gli estremi dell’atto e la versione da consultare. La prima versione consente di verificare l’acquisizione e la struttura di un articolo; la ricognizione dell’intero atto è sperimentale perché l’API può richiedere più chiamate.</p></div>
+      <form id="act-form" class="form-card">
+        <div class="field-grid">
+          <label class="field"><span>Tipo di atto</span><select id="act-type" required>
+            <option value="legge">Legge</option>
+            <option value="decreto.legge">Decreto-legge</option>
+            <option value="decreto.legislativo">Decreto legislativo</option>
+            <option value="decreto.del.presidente.della.repubblica">D.P.R.</option>
+            <option value="regio.decreto">Regio decreto</option>
+            <option value="regio.decreto.legge">Regio decreto-legge</option>
+            <option value="legge.costituzionale">Legge costituzionale</option>
+            <option value="costituzione">Costituzione</option>
+            <option value="decreto.ministeriale">Decreto ministeriale</option>
+          </select></label>
+          <label class="field"><span>Data dell’atto</span><input id="act-date" type="date" value="1990-08-07" required /></label>
+          <label class="field"><span>Numero</span><input id="act-number" type="number" min="1" value="241" required /></label>
+          <label class="field"><span>Articolo iniziale</span><input id="article-number" type="text" value="1" placeholder="es. 1, 13-bis" /></label>
+        </div>
+        <div class="field-grid lower-grid">
+          <label class="field"><span>Versione del testo</span><select id="version-mode"><option value="vigente">Vigente alla data odierna</option><option value="originale">Testo originario</option><option value="data">Vigente a una data specifica</option></select></label>
+          <label class="field" id="vigence-field" hidden><span>Data di vigenza</span><input id="vigence-date" type="date" /></label>
+          <label class="field"><span>Ambito di acquisizione</span><select id="scope"><option value="article">Un articolo</option><option value="act">Intero atto (sperimentale)</option></select></label>
+        </div>
+        <div class="urn-preview"><span>URN generata</span><code id="urn-preview">urn:nir:stato:legge:1990-08-07;241</code><button type="button" id="copy-urn" class="link-button">Copia</button></div>
+        <div class="form-actions"><button type="button" id="load-sample" class="button secondary">Carica esempio locale</button><button type="submit" id="download-btn" class="button primary"><span class="button-icon">↓</span> Acquisisci e parsa</button></div>
+        <p class="disclaimer">Fonte: dati.normattiva.it — testi non autentici a fini informativi. Verificare sempre il testo ufficiale in Gazzetta Ufficiale. <a href="https://dati.normattiva.it/Come-scaricare-i-dati" target="_blank" rel="noreferrer">Informazioni sul riuso dei dati</a>.</p>
+      </form>
+      <div id="status" class="status" role="status" aria-live="polite"><span class="status-dot"></span><div><strong>Pronto</strong><p>Inserisci gli estremi e avvia l’acquisizione. In alternativa, prova il campione locale incluso nel pacchetto.</p></div></div>
+      <section id="results" class="results" hidden>
+        <div class="result-header"><div><div class="eyebrow">RISULTATO DELL’ACQUISIZIONE</div><h2 id="result-title">Articolo acquisito</h2><p id="result-subtitle" class="muted"></p></div><div id="validation-badge" class="validation-badge"></div></div>
+        <div class="metrics" id="metrics"></div>
+        <div class="workspace">
+          <section class="tree-panel"><div class="panel-heading"><h3>DOM normativo</h3><span id="tree-count" class="muted"></span></div><div id="tree" class="tree" role="tree"></div></section>
+          <section class="detail-panel"><div class="panel-heading"><h3>Partizione selezionata</h3><span id="selected-type" class="muted">Nessuna selezione</span></div><div id="selected-detail" class="selected-detail"><p class="muted">Seleziona un nodo dell’albero per vedere il testo e i metadati.</p></div></section>
+        </div>
+        <details class="raw-panel"><summary>HTML originale ricevuto da Normattiva</summary><pre id="raw-html"></pre></details>
+        <details class="raw-panel"><summary>Dettagli tecnici della risposta</summary><pre id="raw-meta"></pre></details>
+      </section>
+    </section>
+  </main>
+  <footer><span>Editor di novelle normative · prototipo sperimentale</span><span>Il testo acquisito non viene inviato a un server applicativo.</span></footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

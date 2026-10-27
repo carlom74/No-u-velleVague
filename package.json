@@ -1,0 +1,12 @@
+{
+  "name": "novelle-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && cp build/parser.js public/js/parser.js && cp build/lessico.js public/js/lessico.js",
+    "dev": "python3 -m http.server 8080",
+    "test": "node --experimental-strip-types --test test/*.test.ts"
+  },
+  "devDependencies": { "typescript": "^5.8.3", "linkedom": "^0.18.0" }
+}
