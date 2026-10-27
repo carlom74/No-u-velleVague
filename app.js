@@ -2,7 +2,7 @@ import { parseArticolo, valutaAffidabilita, contaNodi, scegliVersione } from './
 
 const $ = (id) => document.getElementById(id);
 const API = 'https://api.normattiva.it/t/normattiva.api/bff-opendata/v1/api/v1/atto/dettaglio-atto-urn';
-const state = { articles: [], selected: null, rawResponses: [], busy: false };
+const state = { articles: [], selected: null, rawResponses: [], busy: false, acquiredBytes: 0 };
 const suffixes = ['bis','ter','quater','quinquies'];
 
 function actDate() { return $('act-date').value; }
@@ -177,6 +177,7 @@ function addArticle(html, meta, urn, raw) {
   const result=parseHtml(html);
   state.articles.push({ html, meta, urn, raw, parsed:result.parsed, validation:result.validation });
   state.rawResponses.push(raw);
+  state.acquiredBytes += String(html || '').length * 2;
 }
 async function loadSingle(urnOverride, sampleRecord=null) {
   const urn=urnOverride || articleUrn($('article-number').value || '1');
@@ -189,25 +190,36 @@ async function loadSingle(urnOverride, sampleRecord=null) {
   addArticle(result.html,result.atto,urn,result.raw);
 }
 async function loadActBestEffort() {
-  // First request is always the selected article; probing later articles is bounded and cancellable only by reloading.
+  // No fixed maximum number of articles: the scan ends when the API indicates
+  // the end of the numbered sequence through a run of consecutive misses.
+  // This is a termination heuristic, not proof that suffixes/annexes were found.
   const firstNum = Number.parseInt($('article-number').value || '1',10);
-  await loadSingle(articleUrn(String(firstNum)));
-  const firstBase = Number.isFinite(firstNum) ? firstNum : 1;
-  const maxArticles = 80;
-  let misses=0, found=1;
-  status('loading','Articolo iniziale acquisito',`Ricognizione sperimentale degli articoli successivi (massimo ${maxArticles} tentativi). I suffissi e le strutture di titolo/capo non sono ancora indicizzati in modo completo.`);
-  for (let n=firstBase+1; n<=maxArticles; n++) {
+  const firstBase = Number.isFinite(firstNum) && firstNum > 0 ? firstNum : 1;
+  await loadSingle(articleUrn(String(firstBase)));
+  let misses=0, found=1, n=firstBase+1;
+  let lastProgress=performance.now();
+  status('loading','Articolo iniziale acquisito',`Ricognizione progressiva senza limite fisso al numero di articoli. La scansione si conclude dopo 4 numeri consecutivi non acquisibili; eventuali articoli con suffisso, allegati e titoli/capi richiedono una verifica separata.`);
+  while (misses < 4) {
+    const urn=articleUrn(String(n));
     try {
-      const result=await apiRequest(articleUrn(String(n)));
-      addArticle(result.html,result.atto,articleUrn(String(n)),result.raw);found++;misses=0;
-      if (found % 5 === 0) status('loading','Ricognizione dell’atto',`Acquisiti ${found} articoli. Verifica in corso fino all’individuazione della fine dell’atto.`);
+      const result=await apiRequest(urn);
+      addArticle(result.html,result.atto,urn,result.raw);
+      found++; misses=0;
     } catch (err) {
       misses++;
-      // The API may signal a missing article as an application-level response or HTTP error.
-      if (misses >= 4 && found > 0) break;
     }
+    const now=performance.now();
+    if (now-lastProgress > 700 || found % 10 === 0 || misses > 0) {
+      const mb=(state.acquiredBytes/1024/1024).toFixed(1);
+      const tail=misses ? ` Numeri non acquisiti consecutivi: ${misses}/4.` : '';
+      const sizeNote=state.acquiredBytes > 15*1024*1024 ? ' Il corpus è molto grande: la visualizzazione finale potrebbe richiedere tempo.' : state.acquiredBytes > 5*1024*1024 ? ' Dimensione elevata: l’interfaccia potrebbe rallentare durante la visualizzazione.' : '';
+      status('loading','Ricognizione dell’atto',`Esaminati fino all’art. ${n}; acquisiti ${found} articoli (HTML stimato ${mb} MiB).${tail}${sizeNote}`);
+      lastProgress=now;
+    }
+    n++;
   }
   if (state.articles.length===0) throw new Error('Nessun articolo recuperato.');
+  state.scanInfo={lastProbed:n-1,consecutiveMisses:misses,estimatedHtmlBytes:state.acquiredBytes};
 }
 async function submit(event) {
   event?.preventDefault();
@@ -215,13 +227,13 @@ async function submit(event) {
   if (!actDate() && actType() !== 'costituzione') { status('error','Data mancante','Inserisci la data dell’atto.'); return; }
   if (!actNumber() && actType() !== 'costituzione') { status('error','Numero mancante','Inserisci il numero dell’atto.'); return; }
   if ($('version-mode').value==='data' && !$('vigence-date').value) { status('error','Data di vigenza mancante','Indica la data alla quale vuoi ricostruire il testo vigente.'); return; }
-  state.articles=[];state.rawResponses=[];$('results').hidden=true;setBusy(true);
+  state.articles=[];state.rawResponses=[];state.acquiredBytes=0;$('results').hidden=true;setBusy(true);
   try {
     if ($('scope').value==='act') {
-      status('loading','Acquisizione dell’atto','Avvio della ricognizione sperimentale. L’API fornisce contenuti per articolo; la ricognizione può richiedere tempo e non garantisce di rilevare tutti i suffissi o i titoli/capi.');
+      status('loading','Acquisizione dell’atto','Avvio della ricognizione progressiva senza un limite fisso di articoli. L’individuazione della fine si basa sulle risposte dell’API; suffissi, allegati e struttura in titoli/capi non sono ancora garantiti.');
       await loadActBestEffort();
       renderResults();
-      status('success','Acquisizione terminata',`Sono stati acquisiti ${state.articles.length} articoli. La ricognizione è best effort: controlla l’indice prima di usare il testo per una novella.`);
+      status('success','Ricognizione terminata',`Acquisiti ${state.articles.length} articoli fino al numero esaminato ${state.scanInfo?.lastProbed ?? '—'}. La scansione si è fermata dopo ${state.scanInfo?.consecutiveMisses ?? 0} risposte consecutive non acquisibili; verifica eventuali suffissi, allegati e lacune prima di usare il testo per una novella.`);
     } else {
       status('loading','Contatto Normattiva','Richiesta dell’articolo, parsing HTML e costruzione dell’albero DOM.');
       await loadSingle();renderResults();
@@ -235,7 +247,7 @@ async function submit(event) {
 }
 async function loadLocalSample() {
   if (state.busy) return;
-  setBusy(true);state.articles=[];state.rawResponses=[];$('results').hidden=true;
+  setBusy(true);state.articles=[];state.rawResponses=[];state.acquiredBytes=0;$('results').hidden=true;
   try {
     const samples=await fetch('./public/campioni-normattiva.json').then(r=>{if(!r.ok)throw new Error('Campione locale non trovato.');return r.json();});
     const key='urn:nir:stato:legge:1990-08-07;241~art1';

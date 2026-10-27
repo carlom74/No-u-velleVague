@@ -11,3 +11,11 @@
 - HTML grezzo e metadati consultabili.
 - Campione locale della legge 241/1990 per testare l'interfaccia offline.
 - Ricognizione sperimentale dell'atto con richieste successive articolo per articolo.
+
+
+## v0.2 — acquisizione progressiva
+- Rimosso il tetto fisso di 80 articoli nella ricognizione dell'atto.
+- Scansione sequenziale fino a quattro numeri consecutivi non acquisibili; nessun massimo prefissato di articoli.
+- Stato di avanzamento con ultimo numero esaminato, articoli acquisiti e stima dimensione HTML.
+- Avvisi informativi per corpus grandi, senza interruzione automatica in base alla dimensione.
+- Documentato che la scansione non garantisce ancora suffissi, allegati e gerarchia titolo/capo.

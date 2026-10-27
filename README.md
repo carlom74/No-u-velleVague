@@ -55,3 +55,10 @@ Aprire `http://localhost:8080`.
 - `src/`: sorgenti TypeScript del parser
 
 Runtime: nessun framework e nessuna dipendenza remota. Il parser viene eseguito nel browser.
+
+
+## Ricognizione dell'intero atto (prototipo)
+
+La modalità «Intero atto» non impone più un numero massimo fisso di articoli. Parte dall'articolo indicato e procede in sequenza; termina dopo quattro numeri consecutivi che l'API non riesce ad acquisire. Durante la scansione mostra il numero raggiunto, gli articoli acquisiti e una stima della dimensione HTML. Oltre determinate soglie informative avvisa che la visualizzazione potrebbe rallentare, senza interrompere automaticamente l'acquisizione.
+
+**Limite noto:** questa è una ricognizione best-effort della sequenza numerica, non un indice normativo completo. Non garantisce il reperimento di articoli con suffisso (es. `80-bis`), allegati, partizioni strutturate per titolo/capo o articoli temporaneamente non raggiungibili. Quattro risposte consecutive non acquisibili sono un criterio di arresto euristico, non una prova formale della fine dell'atto. I testi restano da verificare prima di usarli per generare novelle.
