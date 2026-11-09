@@ -3,10 +3,11 @@
 <body><pre id="result">Esecuzione…</pre>
 <script type="module">
 import { daAkn, validaModello } from '../../public/js/model.js';
+import { APP_VERSION, MODEL_VERSION, AUDIT_VERSION } from '../../public/js/version.js';
 import { analizzaAkn } from '../../public/js/audit.js';
 const files = ['AS1308.akn','AS1786.akn','AS1924.akn','AS1786-A.akn'];
 const out = document.querySelector('#result');
-const report = { browser: navigator.userAgent, parser: typeof DOMParser, files: [], errors: [] };
+const report = { appVersion: APP_VERSION, modelVersion: MODEL_VERSION, auditVersion: AUDIT_VERSION, testVersion: APP_VERSION, browser: navigator.userAgent, parser: typeof DOMParser, files: [], errors: [] };
 try {
  for (const file of files) {
   const response = await fetch(`../fixtures/akn/${file}`);

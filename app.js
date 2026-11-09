@@ -1,7 +1,9 @@
+import { APP_VERSION } from './public/js/version.js';
 import { parseArticolo, valutaAffidabilita, contaNodi, scegliVersione } from './public/js/parser.js';
 import { daArticoliNormattiva } from './public/js/model.js';
 
 const $ = (id) => document.getElementById(id);
+for (const el of document.querySelectorAll('[data-app-version]')) el.textContent = APP_VERSION;
 const API = 'https://api.normattiva.it/t/normattiva.api/bff-opendata/v1/api/v1/atto/dettaglio-atto-urn';
 const state = { articles: [], selected: null, rawResponses: [], busy: false, acquiredBytes: 0 };
 const suffixes = ['bis','ter','quater','quinquies'];

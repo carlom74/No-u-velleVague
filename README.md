@@ -1,4 +1,4 @@
-# No(u)velle vague — editor di novelle normative (prototipo 0.5)
+# No(u)velle vague — editor di novelle normative (prototipo 0.5.2)
 
 Prototipo statico, senza backend applicativo e senza database. Funziona nel browser e può essere pubblicato su GitHub Pages, Cloudflare Pages o qualsiasi hosting statico HTTPS.
 
@@ -101,3 +101,12 @@ Il modello riconosce inoltre gli elementi inline/presentazionali presenti nel co
 La v0.5.1 raffina l'audit AKN distinguendo il `step` del `workflow` dalle partizioni normative vuote. Gli eventi del workflow sono conservati nei metadati della radice del modello. L'audit descrive inoltre righe, celle e testo delle tabelle; il test browser confronta il testo delle celle XML con quello acquisito nel modello canonico.
 
 La verifica non equivale a validazione XSD né attesta da sola la completezza semantica dell'importazione.
+
+
+## Versione applicativa
+
+La versione applicativa è definita in un unico punto (`public/js/version.js`) e riportata automaticamente nella home page e nel report del test browser. Il report espone separatamente `appVersion`, `modelVersion`, `auditVersion` e `testVersion`. La versione del modello indica lo schema canonico (`1.0.0`), non la versione del rilascio applicativo.
+
+## Conservazione delle tabelle AKN (v0.5.2)
+
+L'adattatore AKN conserva gli elementi `table`, `tr`, `td` e `th` nell'albero canonico. I nodi mantengono il tipo canonico previsto (tabella o elemento) e riportano in `metadati.nomeElementoAkn` il nome locale AKN, così da rendere verificabili righe e celle senza assimilare le celle a partizioni normative. Il testo di ciascuna cella è estratto attraversando i contenitori e gli elementi inline.

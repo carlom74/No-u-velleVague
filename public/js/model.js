@@ -33,7 +33,7 @@ const MAP = {
     book: 'libro', part: 'parte', title: 'titolo', chapter: 'capo', section: 'sezione', article: 'articolo',
     paragraph: 'comma', subparagraph: 'capoverso', point: 'lettera', indent: 'numero', step: 'numero',
     list: 'elemento', intro: 'elemento', content: 'elemento', hcontainer: 'elemento',
-    annex: 'allegato', table: 'tabella', tr: 'elemento', td: 'elemento', container: 'elemento', attachments: 'elemento', attachment: 'elemento',
+    annex: 'allegato', table: 'tabella', tr: 'elemento', td: 'elemento', th: 'elemento', container: 'elemento', attachments: 'elemento', attachment: 'elemento',
     // Elementi inline/presentazionali riconosciuti: non sono partizioni normative, ma non vanno segnalati come tag ignoti.
     p: 'elemento', i: 'elemento', b: 'elemento', span: 'elemento', eol: 'elemento', img: 'elemento', br: 'elemento', u: 'elemento', sup: 'elemento', sub: 'elemento', a: 'elemento', del: 'elemento', ins: 'elemento', mark: 'elemento', note: 'nota',
     quotedText: 'testo-citato', quotedStructure: 'testo-citato', quotedBlock: 'testo-citato',
@@ -94,6 +94,10 @@ function xmlNode(el, path, diagnostica, eidSeen) {
     }
     if (local === 'hcontainer' && el.getAttribute('name'))
         x.metadati = { ...x.metadati, nomeContenitore: el.getAttribute('name') };
+    // Conserva il nome locale AKN per consentire audit e interrogazioni strutturali
+    // senza confondere righe/celle con partizioni normative.
+    if (['table', 'tr', 'td', 'th'].includes(local))
+        x.metadati = { ...x.metadati, nomeElementoAkn: local };
     if (['p', 'i', 'b', 'span', 'eol', 'img', 'br', 'u', 'sup', 'sub', 'a', 'del', 'ins', 'mark'].includes(local))
         x.metadati = { ...x.metadati, categoriaAkn: 'presentazione-inline' };
     if (local === 'quotedText' || local === 'quotedStructure' || local === 'quotedBlock')

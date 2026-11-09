@@ -1,4 +1,13 @@
-# Registro delle modifiche
+# Changelog
+
+## 0.5.2 — conservazione struttura tabellare e identificazione versione
+
+- Corretto l'adattatore AKN: `table`, `tr`, `td` e `th` conservano il nome dell'elemento sorgente nei metadati `nomeElementoAkn`.
+- Mantenute righe e celle nell'albero canonico senza trasformarle in partizioni normative.
+- Il controllo browser confronta la sequenza testuale delle celle XML con quella importata nel modello.
+- Centralizzata la versione applicativa in `public/js/version.js`; home page e report browser espongono la versione.
+- Il report distingue versione applicativa, schema del modello, audit e test.
+
 
 ## 0.1 — prima versione dell'interfaccia
 
