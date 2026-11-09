@@ -107,6 +107,13 @@ La verifica non equivale a validazione XSD né attesta da sola la completezza se
 
 La versione applicativa è definita in un unico punto (`public/js/version.js`) e riportata automaticamente nella home page e nel report del test browser. Il report espone separatamente `appVersion`, `modelVersion`, `auditVersion` e `testVersion`. La versione del modello indica lo schema canonico (`1.0.0`), non la versione del rilascio applicativo.
 
-## Conservazione delle tabelle AKN (v0.5.2)
+## Conservazione delle tabelle AKN (v0.5.3)
 
 L'adattatore AKN conserva gli elementi `table`, `tr`, `td` e `th` nell'albero canonico. I nodi mantengono il tipo canonico previsto (tabella o elemento) e riportano in `metadati.nomeElementoAkn` il nome locale AKN, così da rendere verificabili righe e celle senza assimilare le celle a partizioni normative. Il testo di ciascuna cella è estratto attraversando i contenitori e gli elementi inline.
+
+
+La versione 0.5.3 corregge la conservazione delle tabelle AKN nel modello canonico e applica URL versionati alle risorse statiche per ridurre gli effetti delle cache del browser/CDN.
+
+
+### v0.5.3
+La versione corregge la perdita delle tabelle AKN annidate in contenitori `presentation`, mantenendo l'esclusione degli altri rami presentazionali. Il test browser verifica la struttura e il testo tabellare dell'allegato AS1786-A.

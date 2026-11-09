@@ -2,15 +2,15 @@
 <html lang="it"><head><meta charset="utf-8"><title>Verifica importazione AKN con DOMParser</title></head>
 <body><pre id="result">Esecuzione…</pre>
 <script type="module">
-import { daAkn, validaModello } from '../../public/js/model.js';
-import { APP_VERSION, MODEL_VERSION, AUDIT_VERSION } from '../../public/js/version.js';
-import { analizzaAkn } from '../../public/js/audit.js';
+import { daAkn, validaModello } from '../../public/js/model.js?v=0.5.3';
+import { APP_VERSION, MODEL_VERSION, AUDIT_VERSION } from '../../public/js/version.js?v=0.5.3';
+import { analizzaAkn } from '../../public/js/audit.js?v=0.5.3';
 const files = ['AS1308.akn','AS1786.akn','AS1924.akn','AS1786-A.akn'];
 const out = document.querySelector('#result');
 const report = { appVersion: APP_VERSION, modelVersion: MODEL_VERSION, auditVersion: AUDIT_VERSION, testVersion: APP_VERSION, browser: navigator.userAgent, parser: typeof DOMParser, files: [], errors: [] };
 try {
  for (const file of files) {
-  const response = await fetch(`../fixtures/akn/${file}`);
+  const response = await fetch(`../fixtures/akn/${file}?v=0.5.3`);
   if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
   const xml = await response.text();
   const parsed = new DOMParser().parseFromString(xml, 'application/xml');
@@ -25,6 +25,8 @@ try {
   const tableCells = nodes.filter(n=>n.metadati?.nomeElementoAkn==='td' || n.metadati?.nomeElementoAkn==='th');
   const xmlCells = Array.from(parsed.getElementsByTagName('*')).filter(e=>['td','th'].includes(e.localName)).map(e=>(e.textContent||'').replace(/[\t\r\n ]+/g,' ').replace(/\s+([,.;:!?])/g,'$1').trim());
   const modelCells = tableCells.map(n=>n.testo);
+  const emptyModelCells = modelCells.filter(t=>!t.trim()).length;
+  const tableRowsPerTable = tables.map(t=>t.figli.filter(n=>n.metadati?.nomeElementoAkn==='tr').length);
   const tableTextPreserved = JSON.stringify(xmlCells)===JSON.stringify(modelCells);
   const workflow = model.radice.metadati?.workflow?.eventi || [];
   const idCount = nodes.filter(n=>n.identificativoSorgente).length;
@@ -33,13 +35,13 @@ try {
   if (!audit.validoXml) report.errors.push(`${file}: XML non valido secondo l'audit`);
   report.files.push({file, xmlBytes:new Blob([xml]).size, nodes:nodes.length, paragraphs:paragraphs.length, emptyParagraphs, tables:tables.length, sourceIds:idCount, diagnostics:model.diagnostica.length, validationErrors:errors.length, title:model.identita.titolo,
    workflowEvents:workflow.length,
-   tableStructure:{tables:tables.length,rows:tableRows.length,cells:tableCells.length,textPreserved:tableTextPreserved},
+   tableStructure:{tables:tables.length,rows:tableRows.length,cells:tableCells.length,emptyCells:emptyModelCells,rowsPerTable:tableRowsPerTable,textPreserved:tableTextPreserved},
    audit:{xmlValid:audit.validoXml, elements:audit.elementiTotali, distinct:audit.elementiDistinti, categories:audit.categorie, unclassified:audit.elementiNonClassificati, emptyStructural:audit.elementiStrutturaliVuoti, emptyContextual:audit.elementiVuotiContestuali, tables:audit.tabelle}});
   if (paragraphs.length && emptyParagraphs) report.errors.push(`${file}: ${emptyParagraphs}/${paragraphs.length} commi senza testo`);
   if (!idCount) report.errors.push(`${file}: nessun identificativo sorgente conservato`);
   if (errors.length) report.errors.push(`${file}: errori di validazione`);
   if (file==='AS1786-A.akn' && !tables.length) report.errors.push('AS1786-A.akn: tabelle del testo a fronte non rilevate');
-  if (file==='AS1786-A.akn' && (!tableRows.length || !tableCells.length || !tableTextPreserved)) report.errors.push('AS1786-A.akn: struttura o contenuto delle celle non conservati');
+  if (file==='AS1786-A.akn' && (tableRows.length!==42 || tableCells.length!==84 || emptyModelCells!==18 || !tableTextPreserved)) report.errors.push(`AS1786-A.akn: struttura/contenuto tabellare non conservati (righe=${tableRows.length}, celle=${tableCells.length}, vuote=${emptyModelCells}, testo=${tableTextPreserved})`);
   if (['AS1308.akn','AS1786.akn','AS1924.akn'].includes(file) && !workflow.length) report.errors.push(`${file}: eventi workflow non conservati nei metadati`);
  }
  report.status = report.errors.length ? 'FAIL' : 'PASS';

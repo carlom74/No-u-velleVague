@@ -1,3 +1,18 @@
+# Test report — v0.5.3
+
+## Modifiche e verifiche eseguite
+
+- Compilazione TypeScript: superata (`tsc -p tsconfig.json`).
+- Importatore AKN: attraversamento degli elementi figli basato su `childNodes`, compatibile con XML namespaced.
+- Test browser predisposto per verificare su AS1786-A: 1 tabella, 42 righe, 84 celle, 18 celle vuote e corrispondenza ordinata del testo delle celle.
+- I test browser devono essere eseguiti dopo la pubblicazione su GitHub Pages; non si dichiara qui un PASS runtime non ancora osservato nel browser.
+
+## Limiti
+
+Il test è una verifica di conservazione strutturale e testuale sul campione, non una validazione XSD né un'attestazione generale di conformità AKN.
+
+---
+
 # Test report — v0.5.2
 
 ## Identificazione
@@ -24,3 +39,11 @@ Per AS1786-A il controllo indipendente sul sorgente XML rileva 1 tabella, 42 rig
 ## Limiti
 
 L'audit non è una validazione XSD e non certifica la conformità AKN. La conservazione tabellare verificata sul campione AS1786-A non equivale a copertura di tutte le varianti di tabelle AKN. Non è ancora verificata in modo esaustivo la semantica di ogni elemento, la gerarchia dei testi citati o la conservazione di ogni attributo.
+
+
+## v0.5.3 — Verifiche locali
+
+- Compilazione TypeScript: PASS.
+- Test modello/ancore: 3 PASS.
+- Correzione mirata: attraversamento dei contenitori `presentation` soltanto quando contengono una tabella discendente.
+- Test end-to-end DOMParser sul browser: da eseguire dopo la pubblicazione GitHub Pages; non si dichiara un PASS runtime prima di tale esecuzione.

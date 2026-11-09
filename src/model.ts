@@ -74,6 +74,8 @@ const MAP:Record<string,TipoPartizione>={
 };
 const IGNORE=new Set(['num','heading','meta','authorialNote','remark','identification','lifecycle','workflow','references','proprietary','presentation']);
 function localName(el:Element):string { return (el.localName||el.tagName).replace(/^.*:/,''); }
+/** Usa childNodes anziché Element.children: è più robusto con XML namespaced e DOMParser. */
+function elementChildren(el:Element):Element[] { return Array.from(el.childNodes).filter((n):n is Element=>n.nodeType===1) as Element[]; }
 function directText(el:Element):string {
  // Estrae il testo appartenente al nodo, attraversando i contenitori AKN
  // (content, p, intro, list), ma senza inglobare il testo di partizioni
@@ -98,9 +100,22 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
  const local=localName(el); const tipo=MAP[local]||'sconosciuto';
  const eid=el.getAttribute('eId'); const sourceId=el.getAttribute('id');
  const id=`${path}/${slug(sourceId||eid||`${local}-${Array.from(el.parentElement?.children||[]).indexOf(el)+1}`)}`;
- const num=Array.from(el.children).find(c=>localName(c)==='num');
- const heading=Array.from(el.children).find(c=>localName(c)==='heading');
- const children=Array.from(el.children).filter(c=>!IGNORE.has(localName(c))&&!['num','heading'].includes(localName(c))).map((c,i)=>xmlNode(c,`${id}/${localName(c)}-${i+1}`,diagnostica,eidSeen));
+ const childElements=elementChildren(el);
+ const num=childElements.find(c=>localName(c)==='num');
+ const heading=childElements.find(c=>localName(c)==='heading');
+ // Le tabelle sono contenuto documentale: non devono essere perse per effetto
+ // delle esclusioni applicate ad altri rami editoriali/presentazionali.
+ // I contenitori presentation sono normalmente esclusi dall'albero normativo.
+ // Se però racchiudono una tabella (come negli allegati comparativi), non vanno
+ // scartati: si conserva il ramo necessario a raggiungere table/tr/td/th.
+ const contieneTabella=(el:Element):boolean=>{
+  if(['table','tr','td','th'].includes(localName(el))) return true;
+  return elementChildren(el).some(contieneTabella);
+ };
+ const children=childElements.filter(c=>
+  ((!IGNORE.has(localName(c))) || (localName(c)==='presentation' && contieneTabella(c)))
+  && !['num','heading'].includes(localName(c))
+ ).map((c,i)=>xmlNode(c,`${id}/${localName(c)}-${i+1}`,diagnostica,eidSeen));
  const label=num?.textContent?.replace(/\s+/g,' ').trim()||null;
  const x=node(id,tipo,label,directText(el),'akn',children);
  x.eId=eid; x.identificativoSorgente=sourceId||null;
@@ -114,7 +129,7 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
  if(local==='hcontainer'&&el.getAttribute('name'))x.metadati={...x.metadati,nomeContenitore:el.getAttribute('name')};
  // Conserva il nome locale AKN per consentire audit e interrogazioni strutturali
  // senza confondere righe/celle con partizioni normative.
- if(['table','tr','td','th'].includes(local))x.metadati={...x.metadati,nomeElementoAkn:local};
+ if(['table','tr','td','th'].includes(local))x.metadati={...x.metadati,nomeElementoAkn:local,ruoloTabellare:({table:'tabella',tr:'riga',td:'cella',th:'cella-intestazione'} as Record<string,string>)[local]};
  if(['p','i','b','span','eol','img','br','u','sup','sub','a','del','ins','mark'].includes(local))x.metadati={...x.metadati,categoriaAkn:'presentazione-inline'};
  if(local==='quotedText'||local==='quotedStructure'||local==='quotedBlock')x.citato=true;
  return x;

@@ -1,3 +1,10 @@
+## 0.5.3 — Conservazione tabelle AKN e cache-busting
+
+- Corretto l'attraversamento dei figli XML usando `childNodes` e filtraggio esplicito degli elementi, più robusto con namespace AKN.
+- Conservati ruolo tabellare, ordine e contenuto di tabelle, righe e celle, incluse le celle vuote.
+- Rafforzato il test browser sull'allegato AS1786-A: attesi 42 righe, 84 celle, 18 celle vuote e confronto integrale del testo delle celle.
+- Aggiunta versione `0.5.3` alle URL di CSS e moduli JavaScript per invalidare le cache delle risorse a ogni rilascio.
+
 # Changelog
 
 ## 0.5.2 — conservazione struttura tabellare e identificazione versione
@@ -77,3 +84,11 @@
 - Il test browser confronta la sequenza del testo delle celle XML con quella conservata nei nodi del modello.
 - La pagina di test verifica anche la conservazione degli eventi workflow.
 - Chiarito che il controllo è strutturale e di conservazione, non una validazione XSD o una certificazione di conformità AKN.
+
+
+## v0.5.3 — Conservazione delle tabelle negli involucri di presentazione
+
+- Corretto l'importatore AKN: i contenitori `presentation` vengono normalmente esclusi dall'albero normativo, ma sono attraversati quando racchiudono una tabella. In questo modo non si perdono `table`, `tr`, `td` e `th` degli allegati tabellari.
+- Conservati i rami intermedi necessari a ricostruire la gerarchia tabella/riga/cella e il testo delle celle, incluse quelle vuote.
+- Aggiunto cache busting esplicito `v=0.5.3` ai moduli e alle risorse della pagina di test.
+- Il test browser controlla 1 tabella, 42 righe, 84 celle, 18 celle vuote e corrispondenza ordinata dei testi sul campione AS1786-A.
