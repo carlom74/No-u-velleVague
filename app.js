@@ -1,4 +1,5 @@
 import { parseArticolo, valutaAffidabilita, contaNodi, scegliVersione } from './public/js/parser.js';
+import { daArticoliNormattiva } from './public/js/model.js';
 
 const $ = (id) => document.getElementById(id);
 const API = 'https://api.normattiva.it/t/normattiva.api/bff-opendata/v1/api/v1/atto/dettaglio-atto-urn';
@@ -175,7 +176,8 @@ function selectNode(sel) {
 }
 function addArticle(html, meta, urn, raw) {
   const result=parseHtml(html);
-  state.articles.push({ html, meta, urn, raw, parsed:result.parsed, validation:result.validation });
+  const canonical = daArticoliNormattiva([result.parsed], { titolo: meta?.titolo ?? null }, urn);
+  state.articles.push({ html, meta, urn, raw, parsed:result.parsed, validation:result.validation, canonical });
   state.rawResponses.push(raw);
   state.acquiredBytes += String(html || '').length * 2;
 }

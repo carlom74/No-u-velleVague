@@ -1,8 +1,12 @@
-# Editor di novelle normative — prototipo 0.1
+# No(u)velle vague — editor di novelle normative (prototipo 0.4)
 
 Prototipo statico, senza backend applicativo e senza database. Funziona nel browser e può essere pubblicato su GitHub Pages, Cloudflare Pages o qualsiasi hosting statico HTTPS.
 
 ## Funzioni incluse
+
+- modello normativo canonico indipendente dalla fonte;
+- importazione sperimentale di Akoma Ntoso XML nel browser;
+- test browser dei quattro campioni AKN inclusi nel repository.
 
 - selezione del tipo, data e numero dell'atto;
 - generazione dell'URN di base;
@@ -62,3 +66,22 @@ Runtime: nessun framework e nessuna dipendenza remota. Il parser viene eseguito 
 La modalità «Intero atto» non impone più un numero massimo fisso di articoli. Parte dall'articolo indicato e procede in sequenza; termina dopo quattro numeri consecutivi che l'API non riesce ad acquisire. Durante la scansione mostra il numero raggiunto, gli articoli acquisiti e una stima della dimensione HTML. Oltre determinate soglie informative avvisa che la visualizzazione potrebbe rallentare, senza interrompere automaticamente l'acquisizione.
 
 **Limite noto:** questa è una ricognizione best-effort della sequenza numerica, non un indice normativo completo. Non garantisce il reperimento di articoli con suffisso (es. `80-bis`), allegati, partizioni strutturate per titolo/capo o articoli temporaneamente non raggiungibili. Quattro risposte consecutive non acquisibili sono un criterio di arresto euristico, non una prova formale della fine dell'atto. I testi restano da verificare prima di usarli per generare novelle.
+
+## Modello normativo canonico (v0.2)
+
+Il modulo `src/model.ts` introduce una rappresentazione indipendente dalla fonte di acquisizione. Il flusso Normattiva esistente produce ora anche `canonical`, mediante `daArticoliNormattiva()`. Il modello conserva identità/versione dell'atto, profilo strutturale, gerarchia, provenienza, diagnostica, statistiche e indice degli `eId` (incluse le collisioni, che non vengono risolte eliminando nodi).
+
+È disponibile anche `daAkn(xml, options)`, adattatore preliminare client-side basato su `DOMParser`. Accetta XML AKN, conserva il documento originale e costruisce una gerarchia canonica; gli elementi non riconosciuti sono segnalati/conservati, non interpretati arbitrariamente. L'interfaccia di caricamento AKN e l'inserimento URN diretta restano incrementi successivi.
+
+Per compilare: `npm run build`. Il modulo browser compilato è `public/js/model.js`. Test specifici: `node --experimental-strip-types --test test/model.test.ts`.
+
+### Modello canonico e importazione AKN
+
+Il modulo `src/model.ts` definisce il modello normativo canonico e gli adattatori per Normattiva HTML e Akoma Ntoso XML. Nell'importazione AKN sono conservati sia l'eventuale `eId` sia l'identificativo XML `id` (campo `identificativoSorgente`); i due identificativi non sono confusi. Gli elementi non ancora classificati sono conservati come frammenti XML e accompagnati da diagnostica.
+
+Il modulo definisce inoltre `BersaglioNormativo` e `AncoraTestuale`. `risolviAncora()` non sceglie automaticamente tra più occorrenze: restituisce lo stato `ambigua`, salvo che il contesto o il numero di occorrenza rendano univoca la selezione.
+
+### Verifica browser dell'importazione AKN
+È disponibile `test/browser/domparser-check.html`, una pagina autonoma che importa i quattro campioni AKN inclusi in `test/fixtures/akn/`, li analizza con il `DOMParser` nativo e verifica testo dei commi, identificativi sorgente, validazione del modello e tabelle del testo a fronte.
+
+Per eseguirla in locale, dalla directory del repository avviare `npm run dev` e aprire `http://localhost:8080/test/browser/domparser-check.html`. La pagina mostra un report JSON e imposta `data-status="PASS"` o `data-status="FAIL"` sull'elemento HTML. La stessa pagina può essere aperta su GitHub Pages dopo aver pubblicato il repository.

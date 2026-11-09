@@ -10,8 +10,8 @@
 <body>
   <header class="topbar">
     <div class="brandmark">N</div>
-    <div><div class="eyebrow">PROTOTIPO 0.1</div><h1>Editor di novelle normative</h1></div>
-    <div class="top-actions"><span class="pill">Client-side</span><span class="pill">Nessun account</span></div>
+    <div><div class="eyebrow">PROTOTIPO 0.4 · MODELLO CANONICO</div><h1>Editor di novelle normative</h1></div>
+    <div class="top-actions"><a class="pill" href="./test/browser/domparser-check.html" target="_blank" rel="noreferrer">Test importazione AKN</a><span class="pill">Client-side</span><span class="pill">Nessun server</span></div>
   </header>
   <main class="layout">
     <aside class="sidebar">
@@ -21,7 +21,7 @@
       <div class="side-note"><strong>Principio di funzionamento</strong><p>Il testo viene acquisito dalla fonte, parsato nel browser e trasformato in un DOM navigabile. I dati restano nella sessione locale.</p></div>
     </aside>
     <section class="main-panel">
-      <div class="intro"><div class="eyebrow">PASSO 1 DI 3</div><h2>Seleziona l’atto da acquisire</h2><p>Indica gli estremi dell’atto e la versione da consultare. La prima versione consente di verificare l’acquisizione e la struttura di un articolo; la ricognizione dell’intero atto è sperimentale perché l’API può richiedere più chiamate.</p></div>
+      <div class="intro"><div class="eyebrow">PASSO 1 DI 3</div><h2>Seleziona l’atto da acquisire</h2><p>Indica gli estremi dell’atto e la versione da consultare. Il prototipo acquisisce i testi e costruisce una rappresentazione normativa canonica; la ricognizione dell’intero atto è sperimentale perché l’API può richiedere più chiamate.</p></div>
       <form id="act-form" class="form-card">
         <div class="field-grid">
           <label class="field"><span>Tipo di atto</span><select id="act-type" required>
@@ -61,7 +61,7 @@
       </section>
     </section>
   </main>
-  <footer><span>Editor di novelle normative · prototipo sperimentale</span><span>Il testo acquisito non viene inviato a un server applicativo.</span></footer>
+  <footer><span>Editor di novelle normative · prototipo 0.4</span><span>Il testo acquisito non viene inviato a un server applicativo.</span></footer>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
