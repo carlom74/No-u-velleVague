@@ -1,15 +1,27 @@
-# Test report — v0.4
+# Test report — v0.5.0
 
-## Verifiche eseguite in questo ambiente
-- Compilazione TypeScript (`tsc -p tsconfig.json`): superata.
-- Test modello e ancore (`node --experimental-strip-types --test test/model.test.ts`): 3 superati.
-- Ispezione dei quattro XML AKN con parser XML: tutti ben formati.
-- Verifica strutturale indipendente dell’estrazione del testo: nessun elemento `paragraph` vuoto nei tre atti con articoli (AS1308, AS1786, AS1924).
-- AS1786-A: rilevata e conservata la tabella del testo a fronte.
-- Il browser headless disponibile nell’ambiente non ha completato l’esecuzione della pagina; il test con DOMParser nativo è quindi predisposto ma resta da eseguire manualmente in un browser.
+## Verifiche eseguite
 
-## Test DOMParser da eseguire
-Aprire `test/browser/domparser-check.html` tramite un server HTTP (non con `file://`). La pagina produce un report JSON. Esito atteso: `status: PASS`, nessun errore, nessun comma vuoto nei tre atti e almeno una tabella in AS1786-A.
+- Compilazione TypeScript: **PASS** (`npm run build`, TypeScript 5.8.3).
+- Test modello canonico/ancore: **3 PASS** (`node --experimental-strip-types --test test/model.test.ts`).
+- Suite completa: **non completata** nell'ambiente di build, perché la dipendenza di sviluppo `linkedom` non è installata; i test che la importano non possono essere avviati.
+- Test browser end-to-end della nuova pagina audit: predisposto in `test/browser/domparser-check.html`; richiede esecuzione in un browser via HTTP/HTTPS.
 
-## Limiti residui
-La verifica manuale nel browser è necessaria prima della pubblicazione. Il test completo Node continua a richiedere l’installazione delle devDependencies (`npm install`, in particolare `linkedom`).
+## Corpus analizzato
+
+Inventario XML indipendente dei quattro fixture inclusi nel pacchetto (conteggio degli elementi e dei nomi locali):
+
+| Documento | Elementi XML | Nomi distinti |
+|---|---:|---:|
+| AS1308.akn | 376 | 45 |
+| AS1786.akn | 525 | 52 |
+| AS1924.akn | 449 | 45 |
+| AS1786-A.akn | 603 | 48 |
+
+L'inventario del corpus è stato classificato nei gruppi previsti dal modulo audit. Nei quattro campioni attuali tutti i nomi di elemento incontrati sono presenti nella tassonomia preliminare; ciò non equivale a copertura dell'intero vocabolario AKN.
+
+## Interpretazione e limiti
+
+La v0.5 riduce le false anomalie dovute a elementi inline/presentazionali noti. Il test browser espone per ogni file: validità XML, numero totale e distinto di elementi, conteggi per categoria, elementi non classificati e partizioni strutturali senza testo.
+
+L'audit non è una validazione XSD e non certifica conformità AKN. Non è ancora verificata in modo esaustivo la semantica di ogni elemento, la gerarchia di testi citati, la conservazione di tutti gli attributi o la corrispondenza integrale tra XML sorgente e modello canonico. Le diagnostiche del modello vanno quindi interpretate separatamente dall'inventario lessicale.

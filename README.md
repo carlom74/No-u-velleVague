@@ -1,4 +1,4 @@
-# No(u)velle vague — editor di novelle normative (prototipo 0.4)
+# No(u)velle vague — editor di novelle normative (prototipo 0.5)
 
 Prototipo statico, senza backend applicativo e senza database. Funziona nel browser e può essere pubblicato su GitHub Pages, Cloudflare Pages o qualsiasi hosting statico HTTPS.
 
@@ -85,3 +85,12 @@ Il modulo definisce inoltre `BersaglioNormativo` e `AncoraTestuale`. `risolviAnc
 È disponibile `test/browser/domparser-check.html`, una pagina autonoma che importa i quattro campioni AKN inclusi in `test/fixtures/akn/`, li analizza con il `DOMParser` nativo e verifica testo dei commi, identificativi sorgente, validazione del modello e tabelle del testo a fronte.
 
 Per eseguirla in locale, dalla directory del repository avviare `npm run dev` e aprire `http://localhost:8080/test/browser/domparser-check.html`. La pagina mostra un report JSON e imposta `data-status="PASS"` o `data-status="FAIL"` sull'elemento HTML. La stessa pagina può essere aperta su GitHub Pages dopo aver pubblicato il repository.
+
+
+## Audit strutturale AKN (v0.5)
+
+Il modulo `src/audit.ts` aggiunge `analizzaAkn(xml)`, un inventario lessicale client-side degli elementi XML. Classifica gli elementi in: radice/documento, struttura normativa, contenitori, presentazione, metadati, supporto editoriale e non classificati. Segnala inoltre le partizioni strutturali prive di testo. La pagina `test/browser/domparser-check.html` include ora, per ciascun campione, il riepilogo dell'audit insieme ai controlli del modello canonico.
+
+Il modello riconosce inoltre gli elementi inline/presentazionali presenti nel corpus (ad es. `i`, `b`, `span`, `eol`, `img`) come elementi AKN noti, senza confonderli con partizioni normative e senza segnalarli come elementi XML sconosciuti. Il frammento XML originale resta conservato nell'atto canonico.
+
+**Limite:** l'audit è un inventario e una classificazione preliminare del corpus, non è una validazione XSD, non attesta la conformità complessiva ad Akoma Ntoso e non dimostra da solo la completezza semantica della gerarchia normativa.

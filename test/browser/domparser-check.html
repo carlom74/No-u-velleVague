@@ -3,6 +3,7 @@
 <body><pre id="result">Esecuzione…</pre>
 <script type="module">
 import { daAkn, validaModello } from '../../public/js/model.js';
+import { analizzaAkn } from '../../public/js/audit.js';
 const files = ['AS1308.akn','AS1786.akn','AS1924.akn','AS1786-A.akn'];
 const out = document.querySelector('#result');
 const report = { browser: navigator.userAgent, parser: typeof DOMParser, files: [], errors: [] };
@@ -13,6 +14,7 @@ try {
   const xml = await response.text();
   const parsed = new DOMParser().parseFromString(xml, 'application/xml');
   if (parsed.querySelector('parsererror')) throw new Error(`${file}: DOMParser ha restituito parsererror`);
+  const audit = analizzaAkn(xml);
   const model = daAkn(xml, { nomeFile: file });
   const walk = (n, acc=[]) => { acc.push(n); n.figli.forEach(c=>walk(c,acc)); return acc; };
   const nodes = walk(model.radice);
@@ -21,13 +23,16 @@ try {
   const idCount = nodes.filter(n=>n.identificativoSorgente).length;
   const emptyParagraphs = paragraphs.filter(n=>!n.testo.trim()).length;
   const errors = validaModello(model).filter(d=>d.severita==='errore');
-  report.files.push({file, xmlBytes:new Blob([xml]).size, nodes:nodes.length, paragraphs:paragraphs.length, emptyParagraphs, tables:tables.length, sourceIds:idCount, diagnostics:model.diagnostica.length, validationErrors:errors.length, title:model.identita.titolo});
+  if (!audit.validoXml) report.errors.push(`${file}: XML non valido secondo l'audit`);
+  report.files.push({file, xmlBytes:new Blob([xml]).size, nodes:nodes.length, paragraphs:paragraphs.length, emptyParagraphs, tables:tables.length, sourceIds:idCount, diagnostics:model.diagnostica.length, validationErrors:errors.length, title:model.identita.titolo,
+   audit:{xmlValid:audit.validoXml, elements:audit.elementiTotali, distinct:audit.elementiDistinti, categories:audit.categorie, unclassified:audit.elementiNonClassificati, emptyStructural:audit.elementiStrutturaliVuoti}});
   if (paragraphs.length && emptyParagraphs) report.errors.push(`${file}: ${emptyParagraphs}/${paragraphs.length} commi senza testo`);
   if (!idCount) report.errors.push(`${file}: nessun identificativo sorgente conservato`);
   if (errors.length) report.errors.push(`${file}: errori di validazione`);
   if (file==='AS1786-A.akn' && !tables.length) report.errors.push('AS1786-A.akn: tabelle del testo a fronte non rilevate');
  }
  report.status = report.errors.length ? 'FAIL' : 'PASS';
+ report.auditScope = 'Inventario lessicale e classificazione preliminare; non costituisce validazione XSD o attestazione di conformità AKN.';
 } catch (e) { report.status='ERROR'; report.errors.push(String(e?.stack||e)); }
 out.textContent = JSON.stringify(report,null,2);
 document.documentElement.dataset.status=report.status;

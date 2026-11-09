@@ -48,3 +48,12 @@
 - Aggiornata l’identificazione della versione nell’interfaccia.
 - Aggiunto accesso diretto al test browser dell’importazione AKN dalla barra superiore.
 - Aggiornata la documentazione introduttiva.
+
+
+## v0.5.0 — Audit strutturale AKN
+
+- Aggiunto `src/audit.ts` con inventario degli elementi XML, conteggi per categoria e rilevazione delle partizioni strutturali prive di testo.
+- Esteso il test browser per mostrare l'audit di ciascuno dei quattro campioni AKN.
+- Classificati gli elementi inline/presentazionali del corpus (`i`, `b`, `span`, `eol`, `img` e affini), evitando di trattarli come tag ignoti.
+- Aggiornata l'etichetta dell'interfaccia alla versione 0.5.
+- Nessuna dipendenza runtime aggiunta; esecuzione interamente client-side.
