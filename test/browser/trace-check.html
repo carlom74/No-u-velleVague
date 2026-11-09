@@ -1,0 +1,17 @@
+<!doctype html><meta charset="utf-8"><title>Traceability check</title><pre id="out">RUNNING</pre>
+<script type="module">
+import {daAkn} from '../../public/js/model.js?v=0.5.5';
+const out=document.querySelector('#out');
+try {
+ const xml=await (await fetch('../fixtures/akn/Normattiva-26G00200.akn')).text();
+ const doc=new DOMParser().parseFromString(xml,'application/xml');
+ const model=daAkn(xml,{nomeFile:'Normattiva-26G00200.akn'});
+ const nodes=[];const walk=n=>{nodes.push(n);n.figli.forEach(walk)};walk(model.radice);
+ const candidates=nodes.filter(n=>Array.isArray(n.metadati?.percorsoXml));
+ const failures=[];
+ for(const n of candidates){let el=doc.documentElement;for(const i of n.metadati.percorsoXml){el=el?.children?.[i];if(!el)break}if(!el)failures.push(n.id)}
+ const articles=nodes.filter(n=>n.tipo==='articolo').length;
+ const result={status:failures.length?'FAIL':'PASS',file:'Normattiva-26G00200.akn',bytes:xml.length,nodes:nodes.length,traceable:candidates.length,traceFailures:failures.length,articles,diagnostics:model.diagnostica.length,firstArticle:candidates.find(n=>n.tipo==='articolo')?.metadati?.percorsoXml};
+ out.textContent=JSON.stringify(result,null,2);document.body.dataset.status=result.status;
+}catch(e){out.textContent='ERROR '+e.stack;document.body.dataset.status='ERROR'}
+</script>

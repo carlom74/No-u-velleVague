@@ -69,7 +69,7 @@ function directText(el) {
     walk(el, true);
     return out.join('').replace(/[\t\r\n ]+/g, ' ').replace(/\s+([,.;:!?])/g, '$1').trim();
 }
-function xmlNode(el, path, diagnostica, eidSeen) {
+function xmlNode(el, path, diagnostica, eidSeen, sourcePath = []) {
     const local = localName(el);
     const tipo = MAP[local] || 'sconosciuto';
     const eid = el.getAttribute('eId');
@@ -89,7 +89,7 @@ function xmlNode(el, path, diagnostica, eidSeen) {
         return elementChildren(el).some(contieneTabella);
     };
     const children = childElements.filter(c => ((!IGNORE.has(localName(c))) || (localName(c) === 'presentation' && contieneTabella(c)))
-        && !['num', 'heading'].includes(localName(c))).map((c, i) => xmlNode(c, `${id}/${localName(c)}-${i + 1}`, diagnostica, eidSeen));
+        && !['num', 'heading'].includes(localName(c))).map((c, i) => xmlNode(c, `${id}/${localName(c)}-${i + 1}`, diagnostica, eidSeen, [...sourcePath, childElements.indexOf(c)]));
     const label = num?.textContent?.replace(/\s+/g, ' ').trim() || null;
     const x = node(id, tipo, label, directText(el), 'akn', children);
     x.eId = eid;
@@ -106,6 +106,7 @@ function xmlNode(el, path, diagnostica, eidSeen) {
         x.contenutoNonInterpretato = new XMLSerializer().serializeToString(el);
         diagnostica.push({ codice: 'akn-elemento-non-mappato', severita: 'info', messaggio: `Elemento AKN non mappato: ${local}; conservato integralmente.`, percorso: id });
     }
+    x.metadati = { ...x.metadati, nomeElementoAkn: local, percorsoXml: sourcePath };
     if (local === 'hcontainer' && el.getAttribute('name'))
         x.metadati = { ...x.metadati, nomeContenitore: el.getAttribute('name') };
     // Conserva il nome locale AKN per consentire audit e interrogazioni strutturali

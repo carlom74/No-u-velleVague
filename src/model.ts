@@ -96,7 +96,7 @@ function directText(el:Element):string {
  walk(el,true);
  return out.join('').replace(/[\t\r\n ]+/g,' ').replace(/\s+([,.;:!?])/g,'$1').trim();
 }
-function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<string,string[]>):NodoNormativo {
+function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<string,string[]>,sourcePath:number[]=[]):NodoNormativo {
  const local=localName(el); const tipo=MAP[local]||'sconosciuto';
  const eid=el.getAttribute('eId'); const sourceId=el.getAttribute('id');
  const id=`${path}/${slug(sourceId||eid||`${local}-${Array.from(el.parentElement?.children||[]).indexOf(el)+1}`)}`;
@@ -115,7 +115,7 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
  const children=childElements.filter(c=>
   ((!IGNORE.has(localName(c))) || (localName(c)==='presentation' && contieneTabella(c)))
   && !['num','heading'].includes(localName(c))
- ).map((c,i)=>xmlNode(c,`${id}/${localName(c)}-${i+1}`,diagnostica,eidSeen));
+ ).map((c,i)=>xmlNode(c,`${id}/${localName(c)}-${i+1}`,diagnostica,eidSeen,[...sourcePath,childElements.indexOf(c)]));
  const label=num?.textContent?.replace(/\s+/g,' ').trim()||null;
  const x=node(id,tipo,label,directText(el),'akn',children);
  x.eId=eid; x.identificativoSorgente=sourceId||null;
@@ -126,6 +126,7 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
   x.contenutoNonInterpretato=new XMLSerializer().serializeToString(el);
   diagnostica.push({codice:'akn-elemento-non-mappato',severita:'info',messaggio:`Elemento AKN non mappato: ${local}; conservato integralmente.`,percorso:id});
  }
+ x.metadati={...x.metadati,nomeElementoAkn:local,percorsoXml:sourcePath};
  if(local==='hcontainer'&&el.getAttribute('name'))x.metadati={...x.metadati,nomeContenitore:el.getAttribute('name')};
  // Conserva il nome locale AKN per consentire audit e interrogazioni strutturali
  // senza confondere righe/celle con partizioni normative.

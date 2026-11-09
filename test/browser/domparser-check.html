@@ -2,15 +2,15 @@
 <html lang="it"><head><meta charset="utf-8"><title>Verifica importazione AKN con DOMParser</title></head>
 <body><pre id="result">Esecuzione…</pre>
 <script type="module">
-import { daAkn, validaModello } from '../../public/js/model.js?v=0.5.4';
-import { APP_VERSION, MODEL_VERSION, AUDIT_VERSION } from '../../public/js/version.js?v=0.5.4';
-import { analizzaAkn } from '../../public/js/audit.js?v=0.5.4';
+import { daAkn, validaModello } from '../../public/js/model.js?v=0.5.5';
+import { APP_VERSION, MODEL_VERSION, AUDIT_VERSION } from '../../public/js/version.js?v=0.5.5';
+import { analizzaAkn } from '../../public/js/audit.js?v=0.5.5';
 const files = ['AS1308.akn','AS1786.akn','AS1924.akn','AS1786-A.akn'];
 const out = document.querySelector('#result');
 const report = { appVersion: APP_VERSION, modelVersion: MODEL_VERSION, auditVersion: AUDIT_VERSION, testVersion: APP_VERSION, browser: navigator.userAgent, parser: typeof DOMParser, files: [], errors: [] };
 try {
  for (const file of files) {
-  const response = await fetch(`../fixtures/akn/${file}?v=0.5.4`);
+  const response = await fetch(`../fixtures/akn/${file}?v=0.5.5`);
   if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
   const xml = await response.text();
   const parsed = new DOMParser().parseFromString(xml, 'application/xml');

@@ -7,7 +7,7 @@
 
 # Changelog
 
-## 0.5.4 — Ispezione del modello canonico
+## 0.5.5 — Ispezione del modello canonico
 
 - Aggiunta una pagina browser dedicata all’esplorazione del modello canonico AKN.
 - Albero gerarchico espandibile/comprimibile con filtro testuale.
@@ -95,3 +95,11 @@
 - Il test browser confronta la sequenza del testo delle celle XML con quella conservata nei nodi del modello.
 - La pagina di test verifica anche la conservazione degli eventi workflow.
 - Chiarito che il controllo è strutturale e di conservazione, non una validazione XSD o una certificazione di conformità AKN.
+
+## 0.5.5 — Tracciabilità XML e inventario del modello
+
+- Ogni nodo importato da AKN conserva in `metadati.percorsoXml` il percorso degli indici degli elementi figli rispetto alla radice del documento sorgente. Il percorso è tecnico e non sostituisce `eId` o l'identificativo XML.
+- L'esploratore mostra, per il nodo selezionato, il frammento XML sorgente corrispondente, mantenendo separati modello canonico e fonte originale.
+- Aggiunti inventario dei nodi per tipo canonico, elenco degli elementi AKN non mappati e pannello persistente delle diagnostiche.
+- Aggiunto come quinto campione `Normattiva-26G00200.akn`, derivato dal file AKN/XML Normattiva caricato nella sessione.
+- Nessuna modifica al metamodello v0.11 né alla semantica dei mapping.

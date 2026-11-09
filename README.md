@@ -1,4 +1,4 @@
-# No(u)velle vague — editor di novelle normative (prototipo 0.5.4)
+# No(u)velle vague — editor di novelle normative (prototipo 0.5.5)
 
 Prototipo statico, senza backend applicativo e senza database. Funziona nel browser e può essere pubblicato su GitHub Pages, Cloudflare Pages o qualsiasi hosting statico HTTPS.
 
@@ -116,7 +116,7 @@ L'adattatore AKN conserva gli elementi `table`, `tr`, `td` e `th` nell'albero ca
 La versione 0.5.3 corregge la conservazione delle tabelle AKN nel modello canonico e applica URL versionati alle risorse statiche per ridurre gli effetti delle cache del browser/CDN.
 
 
-## Ispezione del modello canonico (v0.5.4)
+## Ispezione del modello canonico (v0.5.5)
 
 Dalla barra superiore della home page aprire **Ispeziona modello AKN**. La pagina `test/browser/model-inspector.html` consente di:
 
@@ -127,3 +127,9 @@ Dalla barra superiore della home page aprire **Ispeziona modello AKN**. La pagin
 - visualizzare l'anteprima delle tabelle e le diagnostiche del documento.
 
 La pagina usa il `DOMParser` nativo e l'adattatore `daAkn` nel browser. Non introduce framework, servizi remoti o componenti server. Il caricamento di file locali avviene tramite selezione esplicita dell'utente; i campioni inclusi sono richiesti dalla stessa origine GitHub Pages.
+
+## Tracciabilità XML e inventario (v0.5.5)
+
+L'esploratore collega ciascun nodo canonico al corrispondente elemento XML sorgente mediante `metadati.percorsoXml`, una sequenza di indici di elementi figli a partire dalla radice. Il collegamento permette di visualizzare il frammento XML originale senza duplicare nel modello una copia serializzata di ogni elemento. Il percorso non è un identificativo normativo e non sostituisce `eId` o l'attributo XML `id`.
+
+La pagina mostra inoltre il conteggio dei nodi per tipo canonico, gli elementi AKN non mappati e le diagnostiche. Il campione Normattiva `Normattiva-26G00200.akn` si aggiunge ai quattro campioni parlamentari già inclusi.

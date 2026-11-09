@@ -1,26 +1,25 @@
-# Test report — v0.5.4
+# Test report — v0.5.5
 
 ## Obiettivo
 
-Introdurre una GUI di ispezione del modello canonico AKN, senza modificare il metamodello e senza aggiungere componenti server.
+Aggiungere tracciabilità bidirezionale di consultazione tra nodo canonico e frammento XML sorgente, più strumenti di osservabilità dell'importazione. Nessun intervento sul metamodello v0.11 o sulla semantica dei mapping.
 
 ## Modifiche
 
-- Nuova pagina `test/browser/model-inspector.html`, collegata dalla home page.
-- Caricamento dei quattro campioni AKN inclusi e di file `.akn`/`.xml` locali.
-- Albero gerarchico con espansione/compressione e filtro.
-- Pannello di dettaglio con testo, identificativi, attributi, metadati e contenuto non interpretato.
-- Anteprima tabellare basata sui nodi `table`/`tr`/`td`/`th` già conservati dall’adattatore.
-- Riepilogo statistiche e diagnostiche.
+- `metadati.percorsoXml`: percorso composto dagli indici degli elementi figli rispetto alla radice XML; consente di ritrovare l'elemento sorgente nel documento caricato.
+- L'esploratore mostra il frammento XML corrispondente al nodo selezionato.
+- Inventario dei nodi per tipo canonico, elenco degli elementi non mappati e pannello diagnostiche persistente.
+- Aggiunto il campione `Normattiva-26G00200.akn` (circa 557 KB; 2.169 elementi XML, 69 nomi locali distinti, 54 elementi `article` nel documento sorgente).
+- Versione applicativa e cache-busting aggiornati a 0.5.5.
 
 ## Verifiche eseguite in questa sessione
 
 - Build TypeScript (`npm run build`): **PASS**.
-- Test modello (`test/model.test.ts`): **3 PASS**.
-- Suite completa (`npm test`): **non completata** perché `linkedom` non è installato nell’ambiente; tre file di test non sono stati eseguiti.
-- Test browser dell’esploratore: **da eseguire dopo il deploy** su GitHub Pages.
-- Test browser di importazione AKN/tabella v0.5.3: già eseguito dall’utente con esito **PASS** sui quattro campioni, inclusa la conservazione di 42 righe, 84 celle e 18 celle vuote in AS1786-A.
+- Test mirati del modello (`node --experimental-strip-types --test test/model.test.ts`): **3 PASS**.
+- Suite completa (`npm test`): **parziale/non completata**. I tre test che importano `linkedom` non partono perché il pacchetto non è installato nell'ambiente; i tre test del modello passano.
+- Test browser end-to-end della nuova tracciabilità: **non certificato in questa sessione**. È incluso `test/browser/trace-check.html` per la verifica nel browser dopo il deploy.
+- I quattro campioni precedenti mantengono i test e gli esiti già documentati nella baseline 0.5.4/0.5.3; non sono stati rieseguiti integralmente in questa sessione.
 
 ## Limiti
 
-La pagina è uno strumento di ispezione, non un editor. Non modifica il modello né genera novelle. La visualizzazione riproduce la struttura attualmente costruita dall’adattatore: non certifica completezza semantica AKN, conformità XSD o copertura di tutte le tipologie documentali. Il test browser della nuova pagina deve ancora essere confermato dall’utente dopo la pubblicazione.
+Il percorso XML garantisce la rintracciabilità tecnica dell'elemento nel documento caricato, non la correttezza semantica della sua classificazione nel modello. I mapping restano volutamente invariati e preliminari. L'importazione non certifica conformità XSD né completezza semantica AKN. Il campione Normattiva è incluso come fixture, ma il suo test completo nel browser resta da confermare dopo la pubblicazione.
