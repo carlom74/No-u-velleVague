@@ -23,27 +23,54 @@ const CLASSI = {
 const STRUTTURALI = new Set(['book', 'part', 'title', 'chapter', 'section', 'article', 'paragraph', 'subparagraph', 'point', 'indent', 'step', 'annex', 'quotedText', 'quotedStructure', 'quotedBlock', 'table']);
 const categorie = ['radice-e-documento', 'struttura-normativa', 'contenitore', 'presentazione', 'metadati', 'supporto-editoriale', 'non-classificato'];
 const local = (el) => el.localName || el.tagName.replace(/^.*:/, '');
+function categoriaContestuale(el) {
+    const name = local(el);
+    // In Akoma Ntoso, workflow/step descrive il ciclo di vita dell'atto,
+    // non una partizione del testo normativo.
+    if (name === 'step' && el.parentElement && local(el.parentElement) === 'workflow')
+        return 'metadati';
+    return CLASSI[name] || 'non-classificato';
+}
+function hasText(el) { return !!(el.textContent || '').replace(/\s+/g, '').length; }
 export function analizzaAkn(xml) {
     const doc = new DOMParser().parseFromString(xml, 'application/xml');
     const parseError = doc.querySelector('parsererror');
+    const emptyResult = () => ({ validoXml: false, erroreXml: (parseError?.textContent || 'Errore XML').trim(), elementiTotali: 0, elementiDistinti: 0,
+        categorie: Object.fromEntries(categorie.map(c => [c, 0])), inventario: [], elementiNonClassificati: [],
+        elementiStrutturaliVuoti: [], elementiVuotiContestuali: [], tabelle: [], namespace: null });
     if (parseError)
-        return { validoXml: false, erroreXml: (parseError.textContent || 'Errore XML').trim(), elementiTotali: 0, elementiDistinti: 0, categorie: Object.fromEntries(categorie.map(c => [c, 0])), inventario: [], elementiNonClassificati: [], elementiStrutturaliVuoti: [], namespace: null };
+        return emptyResult();
     const all = Array.from(doc.getElementsByTagName('*'));
     const counts = new Map();
     const structuralEmpty = new Map();
+    const contextualEmpty = new Map();
     for (const el of all) {
-        const name = local(el);
-        counts.set(name, (counts.get(name) || 0) + 1);
-        if (STRUTTURALI.has(name) && !(el.textContent || '').replace(/\s+/g, '').length)
-            structuralEmpty.set(name, (structuralEmpty.get(name) || 0) + 1);
+        const name = local(el), category = categoriaContestuale(el), key = `${name}\u0000${category}`;
+        const item = counts.get(key) || { occorrenze: 0, categoria: category };
+        item.occorrenze++;
+        counts.set(key, item);
+        if (STRUTTURALI.has(name) && !hasText(el)) {
+            if (name === 'step' && category === 'metadati')
+                contextualEmpty.set(name, (contextualEmpty.get(name) || 0) + 1);
+            else
+                structuralEmpty.set(name, (structuralEmpty.get(name) || 0) + 1);
+        }
     }
-    const inventario = Array.from(counts, ([elemento, occorrenze]) => ({ elemento, occorrenze, categoria: CLASSI[elemento] || 'non-classificato' }))
-        .sort((a, b) => b.occorrenze - a.occorrenze || a.elemento.localeCompare(b.elemento));
+    const inventario = Array.from(counts, ([key, v]) => ({ elemento: key.split('\u0000')[0], occorrenze: v.occorrenze, categoria: v.categoria }))
+        .sort((a, b) => b.occorrenze - a.occorrenze || a.elemento.localeCompare(b.elemento) || a.categoria.localeCompare(b.categoria));
     const totals = Object.fromEntries(categorie.map(c => [c, 0]));
     for (const item of inventario)
         totals[item.categoria] += item.occorrenze;
     const vuoti = Array.from(structuralEmpty, ([elemento, occorrenze]) => ({ elemento, occorrenze, categoria: 'struttura-normativa' }));
-    return { validoXml: true, erroreXml: null, elementiTotali: all.length, elementiDistinti: counts.size, categorie: totals, inventario,
+    const vuotiContestuali = Array.from(contextualEmpty, ([elemento, occorrenze]) => ({ elemento, occorrenze, categoria: 'metadati' }));
+    const tables = all.filter(el => local(el) === 'table');
+    const tabelle = tables.map((table, indice) => {
+        const rows = Array.from(table.children).filter(el => local(el) === 'tr');
+        const cells = rows.flatMap(row => Array.from(row.children).filter(el => ['td', 'th'].includes(local(el))));
+        return { indice: indice + 1, righe: rows.length, celle: cells.length, celleVuote: cells.filter(cell => !hasText(cell)).length,
+            caratteriTesto: cells.reduce((n, cell) => n + (cell.textContent || '').length, 0) };
+    });
+    return { validoXml: true, erroreXml: null, elementiTotali: all.length, elementiDistinti: new Set(all.map(local)).size, categorie: totals, inventario,
         elementiNonClassificati: inventario.filter(x => x.categoria === 'non-classificato'), elementiStrutturaliVuoti: vuoti,
-        namespace: doc.documentElement?.namespaceURI || null };
+        elementiVuotiContestuali: vuotiContestuali, tabelle, namespace: doc.documentElement?.namespaceURI || null };
 }

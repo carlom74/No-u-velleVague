@@ -133,6 +133,13 @@ export function daAkn(xml:string,options:{urn?:string|null;nomeFile?:string|null
  const meta=byLocal('FRBRthis')?.getAttribute('value')||null;
  const work=byLocal('FRBRdate')?.getAttribute('date')||null;
  const title=byLocal('docTitle')?.textContent?.trim()||byLocal('publication')?.textContent?.trim()||null;
+ // Il workflow è metadato del ciclo di vita e non appartiene all'albero normativo.
+ // Lo conserviamo in forma strutturata sul nodo radice, senza classificarlo come partizione.
+ const workflow=byLocal('workflow');
+ if(workflow){
+  const events=Array.from(workflow.children).filter(e=>localName(e as Element)==='step').map(e=>{const x=e as Element;return {id:x.getAttribute('id'),date:x.getAttribute('date'),actor:x.getAttribute('actor'),outcome:x.getAttribute('outcome'),href:x.getAttribute('href')}});
+  radice.metadati={...radice.metadati,workflow:{eventi:events}};
+ }
  if(!root.querySelector('body'))diagnostica.push({codice:'akn-body-assente',severita:'avviso',messaggio:'Elemento body non individuato: struttura importata senza interpretazione specifica.'});
  if(seen.size===0)diagnostica.push({codice:'akn-eid-assenti',severita:'info',messaggio:'Il documento non usa eId: gli identificativi XML presenti (attributo id) sono conservati separatamente e usati per gli identificativi interni.'});
  return finalize({schemaVersion:'1.0.0',id:`atto-${slug(options.urn||meta||'akn-importato')}`,identita:{urn:options.urn||null,titolo:title,tipo:null,numero:null,data:work,versione:meta},fonte:{tipo:'akn',acquisitaIl:new Date().toISOString(),...(options.nomeFile?{nomeFile:options.nomeFile}:{}),xmlOriginale:xml},profilo:structuredClone(PROFILO_STANDARD),radice,diagnostica,indiceEid:{},statistiche:{nodi:0,testoCaratteri:0}});

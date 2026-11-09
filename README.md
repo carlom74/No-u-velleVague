@@ -94,3 +94,10 @@ Il modulo `src/audit.ts` aggiunge `analizzaAkn(xml)`, un inventario lessicale cl
 Il modello riconosce inoltre gli elementi inline/presentazionali presenti nel corpus (ad es. `i`, `b`, `span`, `eol`, `img`) come elementi AKN noti, senza confonderli con partizioni normative e senza segnalarli come elementi XML sconosciuti. Il frammento XML originale resta conservato nell'atto canonico.
 
 **Limite:** l'audit è un inventario e una classificazione preliminare del corpus, non è una validazione XSD, non attesta la conformità complessiva ad Akoma Ntoso e non dimostra da solo la completezza semantica della gerarchia normativa.
+
+
+## v0.5.1 – Audit contestuale e conservazione
+
+La v0.5.1 raffina l'audit AKN distinguendo il `step` del `workflow` dalle partizioni normative vuote. Gli eventi del workflow sono conservati nei metadati della radice del modello. L'audit descrive inoltre righe, celle e testo delle tabelle; il test browser confronta il testo delle celle XML con quello acquisito nel modello canonico.
+
+La verifica non equivale a validazione XSD né attesta da sola la completezza semantica dell'importazione.

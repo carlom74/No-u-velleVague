@@ -140,6 +140,13 @@ export function daAkn(xml, options = {}) {
     const meta = byLocal('FRBRthis')?.getAttribute('value') || null;
     const work = byLocal('FRBRdate')?.getAttribute('date') || null;
     const title = byLocal('docTitle')?.textContent?.trim() || byLocal('publication')?.textContent?.trim() || null;
+    // Il workflow è metadato del ciclo di vita e non appartiene all'albero normativo.
+    // Lo conserviamo in forma strutturata sul nodo radice, senza classificarlo come partizione.
+    const workflow = byLocal('workflow');
+    if (workflow) {
+        const events = Array.from(workflow.children).filter(e => localName(e) === 'step').map(e => { const x = e; return { id: x.getAttribute('id'), date: x.getAttribute('date'), actor: x.getAttribute('actor'), outcome: x.getAttribute('outcome'), href: x.getAttribute('href') }; });
+        radice.metadati = { ...radice.metadati, workflow: { eventi: events } };
+    }
     if (!root.querySelector('body'))
         diagnostica.push({ codice: 'akn-body-assente', severita: 'avviso', messaggio: 'Elemento body non individuato: struttura importata senza interpretazione specifica.' });
     if (seen.size === 0)

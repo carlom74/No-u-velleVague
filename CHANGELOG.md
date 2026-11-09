@@ -57,3 +57,14 @@
 - Classificati gli elementi inline/presentazionali del corpus (`i`, `b`, `span`, `eol`, `img` e affini), evitando di trattarli come tag ignoti.
 - Aggiornata l'etichetta dell'interfaccia alla versione 0.5.
 - Nessuna dipendenza runtime aggiunta; esecuzione interamente client-side.
+
+
+## [0.5.1] - 2026-11-09
+
+### Correzioni e verifiche AKN
+- La classificazione dell'elemento `step` è contestuale: quando è figlio di `workflow` viene trattato come metadato del ciclo di vita, non come partizione normativa vuota.
+- Gli eventi `workflow/step` sono conservati nei metadati del nodo radice del modello canonico, con identificativo, data, attore, esito e collegamento.
+- L'audit rileva per ciascuna tabella numero di righe, celle, celle vuote e caratteri testuali.
+- Il test browser confronta la sequenza del testo delle celle XML con quella conservata nei nodi del modello.
+- La pagina di test verifica anche la conservazione degli eventi workflow.
+- Chiarito che il controllo è strutturale e di conservazione, non una validazione XSD o una certificazione di conformità AKN.
