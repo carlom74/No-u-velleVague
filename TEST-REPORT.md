@@ -39,11 +39,3 @@ Per AS1786-A il controllo indipendente sul sorgente XML rileva 1 tabella, 42 rig
 ## Limiti
 
 L'audit non è una validazione XSD e non certifica la conformità AKN. La conservazione tabellare verificata sul campione AS1786-A non equivale a copertura di tutte le varianti di tabelle AKN. Non è ancora verificata in modo esaustivo la semantica di ogni elemento, la gerarchia dei testi citati o la conservazione di ogni attributo.
-
-
-## v0.5.3 — Verifiche locali
-
-- Compilazione TypeScript: PASS.
-- Test modello/ancore: 3 PASS.
-- Correzione mirata: attraversamento dei contenitori `presentation` soltanto quando contengono una tabella discendente.
-- Test end-to-end DOMParser sul browser: da eseguire dopo la pubblicazione GitHub Pages; non si dichiara un PASS runtime prima di tale esecuzione.

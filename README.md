@@ -113,7 +113,3 @@ L'adattatore AKN conserva gli elementi `table`, `tr`, `td` e `th` nell'albero ca
 
 
 La versione 0.5.3 corregge la conservazione delle tabelle AKN nel modello canonico e applica URL versionati alle risorse statiche per ridurre gli effetti delle cache del browser/CDN.
-
-
-### v0.5.3
-La versione corregge la perdita delle tabelle AKN annidate in contenitori `presentation`, mantenendo l'esclusione degli altri rami presentazionali. Il test browser verifica la struttura e il testo tabellare dell'allegato AS1786-A.
