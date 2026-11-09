@@ -1,41 +1,26 @@
-# Test report — v0.5.3
+# Test report — v0.5.4
 
-## Modifiche e verifiche eseguite
+## Obiettivo
 
-- Compilazione TypeScript: superata (`tsc -p tsconfig.json`).
-- Importatore AKN: attraversamento degli elementi figli basato su `childNodes`, compatibile con XML namespaced.
-- Test browser predisposto per verificare su AS1786-A: 1 tabella, 42 righe, 84 celle, 18 celle vuote e corrispondenza ordinata del testo delle celle.
-- I test browser devono essere eseguiti dopo la pubblicazione su GitHub Pages; non si dichiara qui un PASS runtime non ancora osservato nel browser.
+Introdurre una GUI di ispezione del modello canonico AKN, senza modificare il metamodello e senza aggiungere componenti server.
 
-## Limiti
+## Modifiche
 
-Il test è una verifica di conservazione strutturale e testuale sul campione, non una validazione XSD né un'attestazione generale di conformità AKN.
-
----
-
-# Test report — v0.5.2
-
-## Identificazione
-
-- Versione applicativa: **0.5.2** (`public/js/version.js`).
-- Versione schema modello canonico: **1.0.0**.
-- Versione audit: **0.5.2**.
-- Versione test browser: **0.5.2**.
+- Nuova pagina `test/browser/model-inspector.html`, collegata dalla home page.
+- Caricamento dei quattro campioni AKN inclusi e di file `.akn`/`.xml` locali.
+- Albero gerarchico con espansione/compressione e filtro.
+- Pannello di dettaglio con testo, identificativi, attributi, metadati e contenuto non interpretato.
+- Anteprima tabellare basata sui nodi `table`/`tr`/`td`/`th` già conservati dall’adattatore.
+- Riepilogo statistiche e diagnostiche.
 
 ## Verifiche eseguite in questa sessione
 
-- Compilazione TypeScript (`tsc -p tsconfig.json`): **PASS**.
-- Test modello canonico/ancore (`node --experimental-strip-types --test test/model.test.ts`): **3 PASS**.
-- Controllo indipendente delle 84 celle di AS1786-A: **84 celle individuate; sequenza testuale normalizzata XML/modello coincidente**.
-- Verifica del codice browser: predisposta, **da eseguire dopo la pubblicazione**. Non si dichiara ancora un esito PASS end-to-end nel browser.
-- Suite completa: non eseguita in questa sessione; la dipendenza di sviluppo `linkedom` non risulta installata.
-
-## Correzione v0.5.2
-
-L'adattatore AKN conserva gli elementi `table`, `tr`, `td` e `th` nel modello canonico e assegna ai relativi nodi `metadati.nomeElementoAkn`. La pagina di test verifica numero di tabelle, righe e celle, oltre alla corrispondenza della sequenza testuale delle celle XML e del modello.
-
-Per AS1786-A il controllo indipendente sul sorgente XML rileva 1 tabella, 42 righe e 84 celle. La comparazione del testo normalizzato delle 84 celle restituisce uguaglianza. Il risultato end-to-end va confermato eseguendo `test/browser/domparser-check.html` in un browser dopo la pubblicazione.
+- Build TypeScript (`npm run build`): **PASS**.
+- Test modello (`test/model.test.ts`): **3 PASS**.
+- Suite completa (`npm test`): **non completata** perché `linkedom` non è installato nell’ambiente; tre file di test non sono stati eseguiti.
+- Test browser dell’esploratore: **da eseguire dopo il deploy** su GitHub Pages.
+- Test browser di importazione AKN/tabella v0.5.3: già eseguito dall’utente con esito **PASS** sui quattro campioni, inclusa la conservazione di 42 righe, 84 celle e 18 celle vuote in AS1786-A.
 
 ## Limiti
 
-L'audit non è una validazione XSD e non certifica la conformità AKN. La conservazione tabellare verificata sul campione AS1786-A non equivale a copertura di tutte le varianti di tabelle AKN. Non è ancora verificata in modo esaustivo la semantica di ogni elemento, la gerarchia dei testi citati o la conservazione di ogni attributo.
+La pagina è uno strumento di ispezione, non un editor. Non modifica il modello né genera novelle. La visualizzazione riproduce la struttura attualmente costruita dall’adattatore: non certifica completezza semantica AKN, conformità XSD o copertura di tutte le tipologie documentali. Il test browser della nuova pagina deve ancora essere confermato dall’utente dopo la pubblicazione.

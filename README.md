@@ -1,4 +1,4 @@
-# No(u)velle vague — editor di novelle normative (prototipo 0.5.2)
+# No(u)velle vague — editor di novelle normative (prototipo 0.5.4)
 
 Prototipo statico, senza backend applicativo e senza database. Funziona nel browser e può essere pubblicato su GitHub Pages, Cloudflare Pages o qualsiasi hosting statico HTTPS.
 
@@ -6,7 +6,8 @@ Prototipo statico, senza backend applicativo e senza database. Funziona nel brow
 
 - modello normativo canonico indipendente dalla fonte;
 - importazione sperimentale di Akoma Ntoso XML nel browser;
-- test browser dei quattro campioni AKN inclusi nel repository.
+- test browser dei quattro campioni AKN inclusi nel repository;
+- esploratore del modello canonico con albero espandibile, filtro, dettaglio dei nodi, attributi XML, metadati, diagnostiche e anteprima delle tabelle.
 
 - selezione del tipo, data e numero dell'atto;
 - generazione dell'URN di base;
@@ -113,3 +114,16 @@ L'adattatore AKN conserva gli elementi `table`, `tr`, `td` e `th` nell'albero ca
 
 
 La versione 0.5.3 corregge la conservazione delle tabelle AKN nel modello canonico e applica URL versionati alle risorse statiche per ridurre gli effetti delle cache del browser/CDN.
+
+
+## Ispezione del modello canonico (v0.5.4)
+
+Dalla barra superiore della home page aprire **Ispeziona modello AKN**. La pagina `test/browser/model-inspector.html` consente di:
+
+- caricare uno dei quattro campioni AKN inclusi oppure un file `.akn`/`.xml` locale;
+- esplorare e filtrare l'albero completo del modello canonico;
+- espandere o comprimere i rami;
+- selezionare un nodo e consultarne testo, tipo, etichetta, rubrica, `eId`, identificativo sorgente, attributi XML e metadati;
+- visualizzare l'anteprima delle tabelle e le diagnostiche del documento.
+
+La pagina usa il `DOMParser` nativo e l'adattatore `daAkn` nel browser. Non introduce framework, servizi remoti o componenti server. Il caricamento di file locali avviene tramite selezione esplicita dell'utente; i campioni inclusi sono richiesti dalla stessa origine GitHub Pages.

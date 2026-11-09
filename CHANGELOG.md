@@ -7,6 +7,17 @@
 
 # Changelog
 
+## 0.5.4 — Ispezione del modello canonico
+
+- Aggiunta una pagina browser dedicata all’esplorazione del modello canonico AKN.
+- Albero gerarchico espandibile/comprimibile con filtro testuale.
+- Dettaglio del nodo con testo, tipo, etichetta, rubrica, eId, identificativo sorgente, attributi XML e metadati.
+- Anteprima delle tabelle con righe e celle conservate nel modello.
+- Riepilogo delle statistiche e consultazione delle diagnostiche.
+- Caricamento dei quattro campioni inclusi e apertura di file AKN/XML locali.
+- Nessun componente server o dipendenza runtime aggiunta.
+
+
 ## 0.5.2 — conservazione struttura tabellare e identificazione versione
 
 - Corretto l'adattatore AKN: `table`, `tr`, `td` e `th` conservano il nome dell'elemento sorgente nei metadati `nomeElementoAkn`.
