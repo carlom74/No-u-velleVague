@@ -1,0 +1,15 @@
+<!doctype html><html lang="it"><meta charset="utf-8"><title>Regressione ID AKN · No(u)velle vague</title><body><h1>Regressione identificativi AKN</h1><pre id="out">In esecuzione…</pre><script type="module">
+import {daAkn,validaModello} from '../../public/js/model.js';
+const out=document.querySelector('#out');const results=[];const check=(name,fn)=>{try{fn();results.push(`PASS ${name}`)}catch(e){results.push(`FAIL ${name}: ${e.message}`)}};
+const read=async name=>{const r=await fetch(`../fixtures/akn/${name}`);if(!r.ok)throw Error(`${name}: HTTP ${r.status}`);return r.text()};
+const files=['AS1308.akn','AS1786.akn','AS1924.akn','AS1786-A.akn','normattiva-dlgs123-1998.xml','normattiva-l241-1990.xml','normattiva-dl69-2013.xml','normattiva-dl203-2005.xml'];
+for(const file of files){try{const model=daAkn(await read(file),{nomeFile:file});const errors=validaModello(model).filter(x=>x.codice==='id-interno-duplicato');check(`${file}: ID interni univoci`,()=>{if(errors.length)throw Error(`${errors.length} collisioni`) });if(file==='AS1308.akn'||file==='AS1786.akn'||file==='AS1924.akn'||file==='AS1786-A.akn')check(`${file}: firma sconosciuto1-sconosciuto1 assente`,()=>{const all=[];const walk=n=>{all.push(n);n.figli.forEach(walk)};walk(model.radice);const dup=new Set(all.filter(n=>n.idInterno).map(n=>n.idInterno));if(dup.size!==all.length)throw Error('ID interni ripetuti')});if(file.startsWith('normattiva-'))check(`${file}: nessun ID interno duplicato`,()=>{if(errors.length)throw Error('collisioni')});
+const refs=[];const walk=n=>{if(n.attributi?.['eId']&&n.tipo==='elemento'&&n.metadati?.categoriaAkn==='presentazione-inline'){};if(n.attributi?.['href']&&n.attributi?.['eId'])refs.push(n);n.figli.forEach(walk)};walk(model.radice);
+}catch(e){results.push(`FAIL ${file}: ${e.message}`)}}
+const synthetic=`<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0"><act><body><article eId="art_1"><num>1</num><paragraph eId="art_1__para_1"><num>1.</num><content><p><span><ref href="#x">A</ref></span><span><ref href="#y">B</ref></span></p></content></paragraph></article></body></act></akomaNtoso>`;
+const m=daAkn(synthetic);const nodes=[];const walk=n=>{nodes.push(n);n.figli.forEach(walk)};walk(m.radice);
+check('ref riconosciuto come elemento inline',()=>{const ref=nodes.find(n=>n.attributi?.href==='#x');if(!ref||ref.tipo!=='elemento'||ref.contenutoNonInterpretato)throw Error('ref non mappato')});
+check('wrapper paralleli hanno ID interni distinti',()=>{const ids=nodes.map(n=>n.idInterno);if(new Set(ids).size!==ids.length)throw Error('collisione ID interno')});
+check('ID semantici articolo e comma invariati',()=>{if(!nodes.some(n=>n.id==='art1')||!nodes.some(n=>n.id==='art1-com1'))throw Error('ID semantici non conformi')});
+out.textContent=results.join('\n')+`\n\n${results.filter(x=>x.startsWith('PASS')).length} PASS · ${results.filter(x=>x.startsWith('FAIL')).length} FAIL`;
+</script></body></html>

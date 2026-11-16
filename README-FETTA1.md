@@ -1,4 +1,4 @@
-# No(u)velle vague — Fetta 1 (v0.6.0)
+# No(u)velle vague — Fetta 1 (v0.6.2)
 
 ## Avvio locale
 
@@ -25,6 +25,8 @@ Caricare nella root del repository tutti i file e le cartelle contenuti nello ZI
 - annulla/ripristina della copia modificata.
 
 ## Test
+
+- `test/browser/id-regression.html` esegue nel browser la regressione sugli ID interni e sui riferimenti AKN `ref` usando quattro atti del Senato e quattro XML Normattiva inclusi come fixture.
 
 - `npm run build`: compilazione TypeScript e aggiornamento dei moduli browser.
 - `node --experimental-strip-types --test test/fetta1.test.ts`: test unitari del motore Fetta 1.

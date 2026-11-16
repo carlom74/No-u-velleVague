@@ -90,7 +90,7 @@ export function applicaModifica(source, m, veste) {
         const id = `${n.id}-${tipo}-${(etichetta || 'nuovo').toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
         if (trovaNodo(atto.radice, id))
             throw new Error('Identificativo della nuova partizione già utilizzato.');
-        const nuovo = { ...structuredClone(n), id, tipo, etichetta: etichetta || null, rubrica: m.rubricaNuova || null, testo: m.testoPartizione || '', eId: null, identificativoSorgente: null, eIdDuplicato: false, origine: 'sintetico', attributi: {}, figli: [], contenutoNonInterpretato: null, citato: false, metadati: { inseritoDa: m.id } };
+        const nuovo = { ...structuredClone(n), id, idInterno: `${n.idInterno}/sintetico-${m.id}`, tipo, etichetta: etichetta || null, rubrica: m.rubricaNuova || null, testo: m.testoPartizione || '', eId: null, identificativoSorgente: null, eIdDuplicato: false, origine: 'sintetico', attributi: {}, figli: [], contenutoNonInterpretato: null, citato: false, metadati: { inseritoDa: m.id } };
         const i = parent.figli.findIndex(x => x.id === n.id);
         parent.figli.splice(i + (m.posizione === 'dopo' ? 1 : 0), 0, nuovo);
         formula = veste === 'novella' ? `Dopo ${label(n)}, è inserito il seguente: «${nuovo.testo}»` : `Dopo ${label(n)}, inserire il seguente: «${nuovo.testo}»`;

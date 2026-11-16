@@ -11,7 +11,7 @@ test('adattatore Normattiva produce il modello canonico e conserva gerarchia',()
 });
 test('il modello distingue identificativo interno e eId sorgente',()=>{
  const a=daArticoliNormattiva([articolo]); const n=a.radice.figli[0].figli[0];
- assert.ok(n.id); assert.equal(n.eId,null); assert.equal(n.origine,'normattiva-html');
+ assert.ok(n.id); assert.ok(n.idInterno); assert.equal(n.eId,null); assert.equal(n.origine,'normattiva-html');
 });
 
 test('ancora testuale: risolve univocamente e segnala le occorrenze ambigue',()=>{

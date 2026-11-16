@@ -95,3 +95,14 @@
 - Il test browser confronta la sequenza del testo delle celle XML con quella conservata nei nodi del modello.
 - La pagina di test verifica anche la conservazione degli eventi workflow.
 - Chiarito che il controllo è strutturale e di conservazione, non una validazione XSD o una certificazione di conformità AKN.
+
+
+## v0.6.2 — Identificativi interni e regressione AKN
+
+- Separato il percorso interno univoco (`idInterno`) dall'identificativo di navigazione/redazionale (`id`), preservando gli ID semantici delle partizioni normative.
+- La validazione del modello rileva le collisioni sul percorso interno comprensivo dei wrapper non normativi.
+- Riconosciuto l'elemento AKN `ref` come elemento inline/presentazionale sia nel modello sia nell'audit lessicale.
+- Inseriti nel corpus di test quattro AKN Senato e quattro XML Normattiva.
+- Aggiunta la pagina browser `test/browser/id-regression.html` per la verifica di regressione sul corpus.
+- Aggiornati i moduli JavaScript compilati e la versione dell'interfaccia a 0.6.2.
+- Non modificata in questa versione la semantica delle doppie parentesi Normattiva: richiede un intervento dedicato sulle convenzioni di aggiornamento e sulle note.

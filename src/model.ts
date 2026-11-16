@@ -18,7 +18,11 @@ export const PROFILO_STANDARD:ProfiloStrutturale = {
   riferimenti:{articoloConCommaUnicoNonNumerato:'articolo'}
 };
 export interface NodoNormativo {
-  id:string; tipo:TipoPartizione; etichetta:string|null; rubrica:string|null; testo:string;
+  /** ID di navigazione/redazionale (semantico per le partizioni normative). */
+  id:string;
+  /** Percorso interno univoco dell'albero, comprensivo dei wrapper non normativi. */
+  idInterno:string;
+  tipo:TipoPartizione; etichetta:string|null; rubrica:string|null; testo:string;
   eId:string|null; identificativoSorgente:string|null; eIdDuplicato:boolean; origine:'akn'|'normattiva-html'|'ricostruito'|'sintetico';
   attributi:Record<string,string>; figli:NodoNormativo[]; contenutoNonInterpretato:string|null;
   citato:boolean; metadati:Record<string,unknown>;
@@ -44,7 +48,7 @@ export interface AttoCanonico {
 }
 const slug=(s:string)=>s.normalize('NFKD').replace(/[^\w.-]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'nodo';
 function node(id:string,tipo:TipoPartizione,etichetta:string|null,testo:string,origine:NodoNormativo['origine'],figli:NodoNormativo[]=[]):NodoNormativo {
- return {id,tipo,etichetta,rubrica:null,testo,eId:null,identificativoSorgente:null,eIdDuplicato:false,origine,attributi:{},figli,contenutoNonInterpretato:null,citato:false,metadati:{}};
+ return {id,idInterno:id,tipo,etichetta,rubrica:null,testo,eId:null,identificativoSorgente:null,eIdDuplicato:false,origine,attributi:{},figli,contenutoNonInterpretato:null,citato:false,metadati:{}};
 }
 function fromParser(n:NodoParser,path:string):NodoNormativo {
  const x=node(path,n.tipo,n.etichetta||null,n.testo,'normattiva-html',n.figli.map((c,i)=>fromParser(c,`${path}/${c.tipo}-${slug(c.etichetta||String(i+1))}`)));
@@ -69,7 +73,7 @@ const MAP:Record<string,TipoPartizione>={
  list:'elemento',intro:'elemento',content:'elemento',hcontainer:'elemento',
  annex:'allegato',table:'tabella',tr:'elemento',td:'elemento',th:'elemento',container:'elemento',attachments:'elemento',attachment:'elemento',
  // Elementi inline/presentazionali riconosciuti: non sono partizioni normative, ma non vanno segnalati come tag ignoti.
- p:'elemento',i:'elemento',b:'elemento',span:'elemento',eol:'elemento',img:'elemento',br:'elemento',u:'elemento',sup:'elemento',sub:'elemento',a:'elemento',del:'elemento',ins:'elemento',mark:'elemento',note:'nota',
+ p:'elemento',ref:'elemento',i:'elemento',b:'elemento',span:'elemento',eol:'elemento',img:'elemento',br:'elemento',u:'elemento',sup:'elemento',sub:'elemento',a:'elemento',del:'elemento',ins:'elemento',mark:'elemento',note:'nota',
  quotedText:'testo-citato',quotedStructure:'testo-citato',quotedBlock:'testo-citato',
 };
 const IGNORE=new Set(['num','heading','meta','authorialNote','remark','identification','lifecycle','workflow','references','proprietary','presentation']);
@@ -130,7 +134,7 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
  // Conserva il nome locale AKN per consentire audit e interrogazioni strutturali
  // senza confondere righe/celle con partizioni normative.
  if(['table','tr','td','th'].includes(local))x.metadati={...x.metadati,nomeElementoAkn:local,ruoloTabellare:({table:'tabella',tr:'riga',td:'cella',th:'cella-intestazione'} as Record<string,string>)[local]};
- if(['p','i','b','span','eol','img','br','u','sup','sub','a','del','ins','mark'].includes(local))x.metadati={...x.metadati,categoriaAkn:'presentazione-inline'};
+ if(['p','ref','i','b','span','eol','img','br','u','sup','sub','a','del','ins','mark'].includes(local))x.metadati={...x.metadati,categoriaAkn:'presentazione-inline'};
  if(local==='quotedText'||local==='quotedStructure'||local==='quotedBlock')x.citato=true;
  return x;
 }
@@ -146,21 +150,29 @@ function stableToken(n:NodoNormativo,index:number):string {
  if(t==='testo-citato')return `cit${index+1}`;
  return `${prefix[t]||t}${raw||index+1}`;
 }
-function assegnaIdStabili(n:NodoNormativo,parent='',wrappers:{value:number}={value:0}):void {
+function assegnaIdStabili(n:NodoNormativo,parentSemantico='',parentInterno='atto',wrappers:{value:number}={value:0}):void {
  const counts=new Map<string,number>();
  n.figli.forEach((c,i)=>{
   const base=stableToken(c,i); const count=(counts.get(base)||0)+1;counts.set(base,count);
+  const suffix=`${base}${count>1?`-${count}`:''}`;
   const structural = !['elemento','atto'].includes(c.tipo);
-  const nextPath = structural ? (parent ? `${parent}-${base}${count>1?`-${count}`:''}` : `${base}${count>1?`-${count}`:''}`) : parent;
-  c.id = structural ? nextPath : `atto-wrapper${++wrappers.value}`;
+  // Il percorso semantico ignora i wrapper: gli articoli e i commi mantengono
+  // quindi ID compatibili (art3, art3-com2) anche quando cambia il markup AKN.
+  const nextSemantico = structural ? (parentSemantico ? `${parentSemantico}-${suffix}` : suffix) : parentSemantico;
+  // Il percorso interno include ogni nodo e rende distinguibili rami documentali
+  // paralleli che, sul piano semantico, non introducono una nuova partizione.
+  const nextInterno = `${parentInterno}/${suffix}`;
+  c.id = structural ? nextSemantico : `atto-wrapper${++wrappers.value}`;
+  c.idInterno = nextInterno;
   if(c.citato || n.citato){ c.citato=true; c.metadati={...c.metadati,sottoalberoCitato:true}; }
-  assegnaIdStabili(c,nextPath,wrappers);
+  assegnaIdStabili(c,nextSemantico,nextInterno,wrappers);
  });
 }
 
 
 function finalize(a:AttoCanonico):AttoCanonico {
- assegnaIdStabili(a.radice,'');
+ a.radice.idInterno='atto';
+ assegnaIdStabili(a.radice,'','atto');
  const ids=new Map<string,string[]>(); let count=0,chars=0;
  const walk=(n:NodoNormativo)=>{count++;chars+=n.testo.length;if(n.eId){const xs=ids.get(n.eId)||[];xs.push(n.id);ids.set(n.eId,xs);} n.figli.forEach(walk);}; walk(a.radice);
  for(const [eid,paths] of ids) if(paths.length>1){paths.forEach(p=>{const n=findNode(a.radice,p);if(n)n.eIdDuplicato=true;});a.diagnostica.push({codice:'eid-duplicato',severita:'avviso',messaggio:`eId "${eid}" presente ${paths.length} volte: conservate tutte le occorrenze.`});}
@@ -192,7 +204,7 @@ export function daAkn(xml:string,options:{urn?:string|null;nomeFile?:string|null
 }
 export function validaModello(a:AttoCanonico):Diagnostica[] {
  const out=[...a.diagnostica];const ids=new Set<string>();
- const walk=(n:NodoNormativo)=>{if(ids.has(n.id))out.push({codice:'id-interno-duplicato',severita:'errore',messaggio:`Identificativo interno duplicato: ${n.id}`});ids.add(n.id);n.figli.forEach(walk);};walk(a.radice);return out;
+ const walk=(n:NodoNormativo)=>{if(ids.has(n.idInterno))out.push({codice:'id-interno-duplicato',severita:'errore',messaggio:`Identificativo interno duplicato: ${n.idInterno}`});ids.add(n.idInterno);n.figli.forEach(walk);};walk(a.radice);return out;
 }
 
 /** Risolve un'ancora solo quando testo e contesto individuano una singola occorrenza. */

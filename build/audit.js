@@ -7,7 +7,7 @@ const CLASSI = {
     annex: 'struttura-normativa', quotedText: 'struttura-normativa', quotedStructure: 'struttura-normativa', quotedBlock: 'struttura-normativa',
     hcontainer: 'contenitore', container: 'contenitore', content: 'contenitore', intro: 'contenitore', list: 'contenitore',
     table: 'struttura-normativa', tr: 'contenitore', td: 'contenitore',
-    p: 'presentazione', i: 'presentazione', b: 'presentazione', span: 'presentazione', eol: 'presentazione',
+    p: 'presentazione', ref: 'presentazione', i: 'presentazione', b: 'presentazione', span: 'presentazione', eol: 'presentazione',
     img: 'presentazione', br: 'presentazione', u: 'presentazione', sup: 'presentazione', sub: 'presentazione',
     a: 'presentazione', del: 'presentazione', ins: 'presentazione', mark: 'presentazione',
     meta: 'metadati', identification: 'metadati', FRBRWork: 'metadati', FRBRExpression: 'metadati', FRBRManifestation: 'metadati',

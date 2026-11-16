@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?><akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xmlns:eli="http://data.europa.eu/eli/ontology#" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:gu="http://www.gazzettaufficiale.it/eli/" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:na="http://www.normattiva.it/eli/" xmlns:nakn="http://normattiva.it/akn/vocabulary" xmlns:nrdfa="http://www.normattiva.it/rdfa/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/1999/xhtml#">
+    <act name="monovigente">
+        <meta>
+            <identification source="">
+                <FRBRWork>
+                    <FRBRthis value="/akn/it/act/decreto_legislativo/stato/1998-03-31/123/!main"/>
+                    <FRBRuri value="/akn/it/act/decreto_legislativo/stato/1998-03-31/123"/>
+                    <FRBRalias name="urn:nir" value="urn:nir:stato:decreto.legislativo:1998-03-31;123"/>
+                    <FRBRalias name="eli" value="eli/id/1998/04/30/098G0173/CONSOLIDATED/20260101"/>
+                    <FRBRdate date="1998-03-31" name=""/>
+                    <FRBRauthor as="#author" href=""/>
+                    <preservation>
+                        <nrdfa:eli about="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101" aknrelname="eli/id/1998/04/30/098G0173/CONSOLIDATED/20260101">
+                            <nrdfa:span property="rdf:type" resource="eli:LegalResource"/>
+                            <nrdfa:span content=" Disposizioni per la razionalizzazione degli interventi di sostegno pubblico alle imprese, a norma dell'articolo 4, comma 4, lettera c), della legge 15 marzo 1997, n. 59. " lang="it" property="eli:title" xml:lang="it"/>
+                            <nrdfa:span content="http://www.normattiva.it/eli/id/{yyyy}/{mm}/{dd}/{codiceRedazionale}/{tipoVersione}" property="eli:uri_schema"/>
+                            <nrdfa:span content="098G0173" property="eli:id_local"/>
+                            <nrdfa:span property="eli:type_document" resource="gu:tables/resource-type#DECRETO LEGISLATIVO"/>
+                            <nrdfa:span content="1998-03-31" datatype="xsd:date" property="eli:date_document"/>
+                            <nrdfa:span property="eli:version" resource="gu:tables/versions#ORIGINAL"/>
+                        </nrdfa:eli>
+                    </preservation>
+                    <FRBRcountry value="it"/>
+                </FRBRWork>
+                <FRBRExpression>
+                    <FRBRthis value="/akn/it/act/decreto_legislativo/stato/1998-03-31/123/ita@2026-01-01/!main"/>
+                    <FRBRuri value="/akn/it/act/decreto_legislativo/stato/1998-03-31/123/ita@2026-01-01"/>
+                    <FRBRdate date="2026-01-01" name=""/>
+                    <FRBRauthor as="#author" href=""/>
+                    <preservation>
+                        <nrdfa:eli about="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101/ita">
+                            <nrdfa:span property="rdf:type" resource="eli:LegalExpression"/>
+                            <nrdfa:span property="eli:realizes" resource="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101"/>
+                            <nrdfa:span property="eli:is_embodied_by" resource="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101/ita/akn"/>
+                            <nrdfa:span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+                            <nrdfa:span property="eli:publisher_agent" resource="http://www.ipzs.it"/>
+                        </nrdfa:eli>
+                    </preservation>
+                    <FRBRlanguage language="ita"/>
+                </FRBRExpression>
+                <FRBRManifestation>
+                    <FRBRthis value="/akn/it/act/decreto_legislativo/stato/1998-03-31/123/ita@2026-01-01/!main.xml"/>
+                    <FRBRuri value="/akn/it/act/decreto_legislativo/stato/1998-03-31/123/ita@2026-01-01.xml"/>
+                    <FRBRdate date="1998-03-31" name=""/>
+                    <FRBRauthor as="#author" href=""/>
+                    <preservation>
+                        <nrdfa:eli about="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101/ita/akn">
+                            <nrdfa:span property="rdf:type" resource="eli:Format"/>
+                            <nrdfa:span property="eli:format" resource="http://www.iana.org/assignments/media-types/xml"/>
+                        </nrdfa:eli>
+                    </preservation>
+                </FRBRManifestation>
+            </identification>
+            <publication date="1998-04-30" name="" number="99" showAs=""/>
+            <lifecycle source="">
+                <eventRef date="1998-04-30" eId="eventRef_0" source="ro1"/>
+                <eventRef date="1999-01-08" eId="eventRef_1" source="rp1"/>
+                <eventRef date="1999-05-25" eId="eventRef_2" source="rp2"/>
+                <eventRef date="2002-05-08" eId="eventRef_3" source="rp3"/>
+                <eventRef date="2009-01-17" eId="eventRef_4" source="rp4"/>
+                <eventRef date="2009-12-21" eId="eventRef_5" source="rp5"/>
+                <eventRef date="2011-02-17" eId="eventRef_6" source="rp6"/>
+                <eventRef date="2012-06-26" eId="eventRef_7" source="rp7"/>
+                <eventRef date="2012-11-21" eId="eventRef_8" source="rp8"/>
+                <eventRef date="2014-02-10" eId="eventRef_9" source="rp9"/>
+                <eventRef date="2014-12-12" eId="eventRef_10" source="rp10"/>
+                <eventRef date="2018-11-29" eId="eventRef_11" source="rp11"/>
+                <eventRef date="2019-11-20" eId="eventRef_12" source="rp12"/>
+                <eventRef date="2020-12-10" eId="eventRef_13" source="rp13"/>
+                <eventRef date="2022-03-04" eId="eventRef_14" source="rp14"/>
+                <eventRef date="2023-03-06" eId="eventRef_15" source="rp15"/>
+                <eventRef date="2024-02-06" eId="eventRef_16" source="rp16"/>
+                <eventRef date="2025-03-31" eId="eventRef_17" source="rp17"/>
+                <eventRef date="2025-12-10" eId="eventRef_18" source="rp18"/>
+            </lifecycle>
+            <analysis source="">
+                <passiveModifications>
+                    <textualMod eId="pmod_0" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_1"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_1" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_2"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_2" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_3"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_3" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_4"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_4" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_5"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_5" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_6"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_6" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_7"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_7" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_8"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_8" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_9"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_9" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_10"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_10" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_11"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_11" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_12"/>
+                        <new>
+                            <nakn:text>((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</nakn:text>
+                        </new>
+                    </textualMod>
+                </passiveModifications>
+            </analysis>
+            <references source="">
+                <original eId="ro1" href="/akn/it/act/DECRETO_LEGISLATIVO/stato/1998-03-31/123/!main" showAs=""/>
+                <passiveRef eId="rp1" href="/akn/it/act/CIRCOLARE/MINISTERO_DELL'INDUSTRIA,_DEL_COMMERCIO_E_DELL'ARTIGIANATO/1998-12-29/4750/!main" showAs=""/>
+                <passiveRef eId="rp2" href="/akn/it/act/DECRETO-LEGGE/stato/1999-05-24/148/!main" showAs=""/>
+                <passiveRef eId="rp3" href="/akn/it/act/DECRETO-LEGGE/stato/2002-05-07/85/!main" showAs=""/>
+                <passiveRef eId="rp4" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2008-12-30/938/!main" showAs=""/>
+                <passiveRef eId="rp5" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2009-12-16/985/!main" showAs=""/>
+                <passiveRef eId="rp6" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2011-02-07/4656/!main" showAs=""/>
+                <passiveRef eId="rp7" href="/akn/it/act/DECRETO-LEGGE/stato/2012-06-22/83/!main" showAs=""/>
+                <passiveRef eId="rp8" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2012-11-12/3738/!main" showAs=""/>
+                <passiveRef eId="rp9" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2014-01-31/3428/!main" showAs=""/>
+                <passiveRef eId="rp10" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2014-12-02/6092/!main" showAs=""/>
+                <passiveRef eId="rp11" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2018-11-20/3513/!main" showAs=""/>
+                <passiveRef eId="rp12" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2019-10-24/3732/!main" showAs=""/>
+                <passiveRef eId="rp13" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2020-11-12/3203/!main" showAs=""/>
+                <passiveRef eId="rp14" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLO_SVILUPPO_ECONOMICO/2022-02-03/4300/!main" showAs=""/>
+                <passiveRef eId="rp15" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLE_IMPRESE_E_DEL_MADE_IN_ITALY/2023-02-21/8932/!main" showAs=""/>
+                <passiveRef eId="rp16" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLE_IMPRESE_E_DEL_MADE_IN_ITALY/2024-01-19/13049/!main" showAs=""/>
+                <passiveRef eId="rp17" href="/akn/it/act/CIRCOLARE/MINISTERO_DELLE_IMPRESE_E_DEL_MADE_IN_ITALY/2025-03-12/26054/!main" showAs=""/>
+                <passiveRef eId="rp18" href="/akn/it/act/DECRETO_LEGISLATIVO/stato/2025-11-27/184/!main" showAs=""/>
+            </references>
+            <proprietary source="">
+                <rdf:RDF>
+                    <rdf:Description rdf:about="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101">
+                        <rdf:type rdf:resource="eli:LegalResource"/>
+                        <eli:title xml:lang="it"> Disposizioni per la razionalizzazione degli interventi di sostegno pubblico alle imprese, a norma dell'articolo 4, comma 4, lettera c), della legge 15 marzo 1997, n. 59. </eli:title>
+                        <eli:uri_schema>http://www.normattiva.it/eli/id/{yyyy}/{mm}/{dd}/{codiceRedazionale}/{tipoVersione}</eli:uri_schema>
+                        <eli:id_local>098G0173</eli:id_local>
+                        <eli:type_document rdf:resource="gu:tables/resource-type#DECRETO LEGISLATIVO"/>
+                        <eli:date_document rdf:datatype="xsd:date">1998-03-31</eli:date_document>
+                        <eli:version rdf:resource="gu:tables/versions#ORIGINAL"/>
+                    </rdf:Description>
+                    <rdf:Description rdf:about="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101/ita">
+                        <rdf:type rdf:resource="eli:LegalExpression"/>
+                        <eli:realizes rdf:resource="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101"/>
+                        <eli:is_embodied_by rdf:resource="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101/ita/akn"/>
+                        <eli:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+                        <eli:publisher_agent rdf:resource="http://www.ipzs.it"/>
+                    </rdf:Description>
+                    <rdf:Description rdf:about="na:id/1998/04/30/098G0173/CONSOLIDATED/20260101/ita/akn">
+                        <rdf:type rdf:resource="eli:format"/>
+                        <eli:format rdf:resource="http://www.iana.org/assignments/media-types/xml"/>
+                    </rdf:Description>
+                </rdf:RDF>
+            </proprietary>
+        </meta>
+        <preface>
+            <p>
+                <docType>DECRETO LEGISLATIVO</docType>
+                <docDate date="1998-03-31">31 marzo 1998</docDate>
+                <docNumber>123</docNumber>
+                <docTitle> Disposizioni per la razionalizzazione degli interventi di sostegno
+pubblico alle imprese, a norma dell'articolo 4, comma 4, lettera c),
+della legge 15 marzo 1997, n. 59.
+</docTitle>
+            </p>
+            <p>
+                <authorialNote eId="atn1" placement="bottom">
+                    <p>Entrata in vigore del decreto: 15/5/1998</p>
+                </authorialNote>
+            </p>
+        </preface>
+        <body>
+            <article eId="art_1">
+                <num>Art. 1.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_1">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_2">
+                <num>Art. 2.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_2">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_3">
+                <num>Art. 3.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_3">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_4">
+                <num>Art. 4.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_4">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_5">
+                <num>Art. 5.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_5">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_6">
+                <num>Art. 6.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_6">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_7">
+                <num>Art. 7.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_7">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_8">
+                <num>Art. 8.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_8">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_9">
+                <num>Art. 9.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_9">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_10">
+                <num>Art. 10.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_10">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_11">
+                <num>Art. 11.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_11">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_12">
+                <num>Art. 12.</num>
+                <heading/>
+                <paragraph>
+                    <content>
+                        <p>
+                            <ins eId="ins_12">((PROVVEDIMENTO ABROGATO DAL D.LGS. 27 NOVEMBRE 2025, N. 184))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+        </body>
+    </act>
+</akomaNtoso>

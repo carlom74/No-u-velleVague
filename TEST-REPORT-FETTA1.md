@@ -1,4 +1,4 @@
-# Test report — Fetta 1 / v0.6.0
+# Test report — Fetta 1 / v0.6.2
 
 Data: 16 novembre 2026.
 
@@ -11,7 +11,19 @@ Data: 16 novembre 2026.
 | Test unitari `test/fetta1.test.ts` | PASS 6/6 | sostituzione parole, abrogazione, sostituzione partizione, inserimento, ambiguità, numerazione in coda |
 | Sintassi `fetta1.js` (`node --check`) | PASS | controllo sintattico |
 | Suite preesistente completa | NON ESEGUITA CON SUCCESSO | richiede `linkedom`; installazione dipendenze non completata nel tempo disponibile |
-| Test browser `test/browser/fetta1-check.html` | PREDISPOSTO, NON ESEGUITO | deve essere aperto in un browser tramite HTTP |
+| Test browser `test/browser/fetta1-check.html` | PREDISPOSTO, NON ESEGUITO in questa sessione | deve essere aperto in un browser tramite HTTP |
+| Test browser `test/browser/id-regression.html` | PREDISPOSTO, NON ESEGUITO con esito affidabile | Chromium headless non ha completato il caricamento entro il timeout; da eseguire in browser ordinario |
+| Test unitari `test/model.test.ts` | PASS 3/3 | adattatore, identificativi, ancore testuali |
+| Test unitari `test/fetta1.test.ts` | PASS 6/6 | motore Fetta 1 |
+| Build TypeScript (`tsc -p tsconfig.json`) | PASS | sorgenti e moduli browser aggiornati |
+
+## Correzioni v0.6.2
+
+- Introdotto `idInterno`, percorso univoco comprensivo dei wrapper non normativi. La validazione delle collisioni usa questo campo.
+- Conservati gli ID semantici delle partizioni normative (ad es. `art3`, `art3-com2`) senza incorporare i wrapper.
+- Mappato AKN `ref` come elemento inline riconosciuto nel modello e nell'audit lessicale.
+- Inseriti nel corpus di regressione quattro AKN Senato (`AS1308`, `AS1786`, `AS1924`, `AS1786-A`) e quattro XML Normattiva (D.Lgs. 123/1998, L. 241/1990, D.L. 69/2013, D.L. 203/2005).
+- Aggiunta la pagina `test/browser/id-regression.html`. I test su corpus reale restano da eseguire e verificare in un browser.
 
 ## Limiti da non confondere con test superati
 
