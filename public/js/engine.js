@@ -79,6 +79,28 @@ export function calcolaEtichetta(parent, anchor, tipo, posizione = 'dopo') {
     }
     return '';
 }
+/** Percorso gerarchico calcolato dall’albero canonico: non viene duplicato nel comando. */
+export function percorsoBersaglio(root, id) {
+    const path = [];
+    const visit = (n) => { path.push(n); if (n.id === id)
+        return true; for (const c of n.figli)
+        if (visit(c))
+            return true; path.pop(); return false; };
+    return visit(root) ? path : [];
+}
+function riferimentoGerarchico(root, n) {
+    const path = percorsoBersaglio(root, n.id).filter(x => ['articolo', 'comma', 'capoverso', 'lettera', 'numero'].includes(x.tipo));
+    return path.map(x => label(x)).join(', ') || label(n);
+}
+function formulaBersaglio(root, n, veste, azione) {
+    const path = percorsoBersaglio(root, n.id).filter(x => ['articolo', 'comma', 'capoverso', 'lettera', 'numero'].includes(x.tipo));
+    if (path.length <= 1)
+        return labelConArticolo(n);
+    const target = path[path.length - 1];
+    const ancestors = path.slice(0, -1).reverse();
+    const prep = (x) => x.tipo === 'articolo' ? `dell’${label(x)}` : x.tipo === 'comma' ? `del ${label(x)}` : x.tipo === 'lettera' ? `della ${label(x)}` : x.tipo === 'numero' ? `del ${label(x)}` : `del ${label(x)}`;
+    return `${labelConArticolo(target)} ${ancestors.map(prep).join(' ')}`;
+}
 export function applicaModifica(source, m, veste) {
     const atto = structuredClone(source);
     const n = trovaNodo(atto.radice, m.nodoId);
@@ -100,10 +122,11 @@ export function applicaModifica(source, m, veste) {
         const parent = parentOf(atto.radice, n.id);
         if (!parent)
             throw new Error('Non è possibile abrogare la radice del documento.');
+        const ref = formulaBersaglio(atto.radice, n, veste, 'abrogazione');
         if (veste === 'novella')
-            formula = `${maiuscola(labelConArticolo(n))} è ${participio(n, 'abrogato')}.`;
+            formula = `${maiuscola(ref)} è ${participio(n, 'abrogato')}.`;
         else
-            formula = `Sopprimere ${labelConArticolo(n)}.`;
+            formula = `Sopprimere ${ref}.`;
         parent.figli = parent.figli.filter(x => x.id !== n.id);
     }
     else if (m.operazione === 'sostituzione_partizione') {
@@ -111,10 +134,27 @@ export function applicaModifica(source, m, veste) {
             throw new Error('Inserire il testo della nuova partizione.');
         n.testo = m.testoPartizione;
         const testoNuovo = testoPartizione(n, m.testoPartizione);
+        const ref = formulaBersaglio(atto.radice, n, veste, 'sostituzione');
         if (veste === 'novella')
-            formula = `${maiuscola(labelConArticolo(n))} è ${participio(n, 'sostituito')} dal seguente: ${cita(testoNuovo)}`;
+            formula = `${maiuscola(ref)} è ${participio(n, 'sostituito')} dal seguente: ${cita(testoNuovo)}`;
         else
-            formula = `Sostituire ${labelConArticolo(n)} con il seguente: ${cita(testoNuovo)}`;
+            formula = `Sostituire ${ref} con il seguente: ${cita(testoNuovo)}`;
+    }
+    else if (m.operazione === 'sostituzione_rubrica') {
+        if (!n.rubrica)
+            throw new Error('Il bersaglio non possiede una rubrica.');
+        const nuova = (m.rubricaNuova ?? '').trim();
+        if (!nuova)
+            throw new Error('Inserire la nuova rubrica.');
+        const vecchia = n.rubrica;
+        n.rubrica = nuova;
+        formula = veste === 'novella' ? `La rubrica di ${riferimentoGerarchico(atto.radice, n)} è sostituita dalla seguente: ${cita(nuova)}.` : `Sostituire la rubrica di ${riferimentoGerarchico(atto.radice, n)} con la seguente: ${cita(nuova)}.`;
+    }
+    else if (m.operazione === 'soppressione_rubrica') {
+        if (!n.rubrica)
+            throw new Error('Il bersaglio non possiede una rubrica.');
+        n.rubrica = null;
+        formula = veste === 'novella' ? `La rubrica di ${riferimentoGerarchico(atto.radice, n)} è soppressa.` : `Sopprimere la rubrica di ${riferimentoGerarchico(atto.radice, n)}.`;
     }
     else {
         const parent = parentOf(atto.radice, n.id);

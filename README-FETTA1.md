@@ -43,3 +43,8 @@ Questa è una prima implementazione eseguibile della Fetta 1, non una certificaz
 - `test/functional-real.mjs` verifica il motore sulle stesse parole del comma reale, su un modello canonico fixture derivato dal documento.
 - Le formule per sostituzione integrale, abrogazione, sostituzione di parole e inserimento sono state riallineate ai modelli pertinenti del Catalogo v0.11 per i casi coperti.
 - L'interfaccia browser completa deve ancora essere collaudata in un browser ordinario; la prova end-to-end non è dichiarata superata in questa consegna.
+
+
+## v0.6.5 — revisione delle fondamenta redazionali
+
+La Fetta 1 include i riferimenti gerarchici calcolati dall’albero, la separazione tra rubrica e contenuto, le operazioni specifiche sulle rubriche, la navigazione contestuale, l’anteprima non editabile e i test di regressione. Per i dettagli e i limiti delle verifiche consultare `TEST-REPORT-V0.6.5.md`.
