@@ -1,4 +1,4 @@
-# No(u)velle vague — Fetta 1 (v0.6.2)
+# No(u)velle vague — Fetta 1 (v0.6.3)
 
 ## Avvio locale
 
@@ -36,3 +36,10 @@ Caricare nella root del repository tutti i file e le cartelle contenuti nello ZI
 ## Limiti espliciti della consegna
 
 Questa è una prima implementazione eseguibile della Fetta 1, non una certificazione di copertura completa del Catalogo. La numerazione è parziale e non copre ancora tutti i casi NUM-01…NUM-14; il compositore multi-operazione per atto, l'applicazione automatica della veste in base ai metadati della fonte e l'allineamento di tutte le formule ai rispettivi ID del Catalogo richiedono completamento e test dedicati prima di dichiarare la Fetta 1 conclusa. I PDF dei fascicoli Senato sono corpus di evidenza e non vengono caricati nel runtime dell'applicazione.
+
+## Regressione funzionale v0.6.3
+
+- `test/browser/functional-real.html` importa nel browser il fascicolo AKN A.S. 1308 e prova le quattro operazioni sul testo reale dell'articolo 1, comma 1.
+- `test/functional-real.mjs` verifica il motore sulle stesse parole del comma reale, su un modello canonico fixture derivato dal documento.
+- Le formule per sostituzione integrale, abrogazione, sostituzione di parole e inserimento sono state riallineate ai modelli pertinenti del Catalogo v0.11 per i casi coperti.
+- L'interfaccia browser completa deve ancora essere collaudata in un browser ordinario; la prova end-to-end non è dichiarata superata in questa consegna.

@@ -1,4 +1,4 @@
-# Test report — Fetta 1 / v0.6.2
+# Test report — Fetta 1 / v0.6.3 (consolidamento storico v0.6.2)
 
 Data: 16 novembre 2026.
 
@@ -35,3 +35,39 @@ Data: 16 novembre 2026.
 6. La lettura e la conservazione dei sottoalberi citati sono predisposte nel parser; la modifica operativa delle novelle annidate appartiene alla Fetta 4.
 
 Il superamento dei test sopra elencati non costituisce validazione AKN generale, XSD o giuridica.
+
+
+## v0.6.3 — Regressione funzionale preliminare su A.S. 1308
+
+**Fonte di prova:** `test/fixtures/akn/AS1308.akn`, articolo 1, comma 1.
+
+Il testo del comma è stato estratto dal documento AKN reale. Il test del motore opera su un modello canonico fixture derivato da quel testo; non equivale a una prova end-to-end dell'adattatore AKN nel browser. È stata inoltre predisposta `test/browser/functional-real.html`, che importa il documento con `daAkn()` via DOMParser e prova le quattro operazioni nel browser.
+
+| Verifica | Esito | Perimetro |
+|---|---|---|
+| Build TypeScript (`npm run build`) | PASS | Sorgenti e moduli browser compilati |
+| Test Fetta 1 | PASS — 8/8 | Operazioni, formule, ambiguità e numerazione |
+| Test funzionale su modello derivato da AS1308 | PASS — 6/6 | Sostituzione testuale, sostituzione integrale, abrogazione, inserimento, conservazione fonte, unicità ID |
+| Browser `functional-real.html` | DA ESEGUIRE | Harness predisposto, Chromium headless non ha completato l'esecuzione nell'ambiente di lavoro |
+| Suite completa | PARZIALE — 11 PASS, 3 file bloccati | `linkedom` non installato (`casi`, `corpus-strutturale`, `validazione`) |
+
+### Correzioni alle formule
+
+- Emendamento: `Sostituire le parole «X» con le seguenti: «Y».` (E-05).
+- Emendamento: `Sostituire il comma 1 con il seguente: «1. ...»` (E-03).
+- Emendamento: `Sopprimere il comma 1.` (E-18).
+- Novella: `Dopo il comma 1 è inserito il seguente: «1-bis. ...»` (N-17).
+
+Il testo del nodo canonico resta privo della numerazione di presentazione; la numerazione è resa nella formula/testo citato.
+
+### Limiti e backlog emersi
+
+1. Le etichette AKN con prefisso `Art.` e punto finale sono normalizzate prima della composizione delle formule.
+
+1. Le formule per inserimento prima del bersaglio non sono ancora differenziate e validate rispetto alla formula specifica; non considerare coperta la posizione `prima`.
+2. Le formule per lettere/numeri e per bersagli annidati richiedono test dedicati e verifica puntuale con il Catalogo.
+3. Il compositore multi-operazione e la veste derivata dalla fonte vanno collaudati a livello UI.
+4. Il riquadro testuale è `contenteditable`: verificare e correggere il rischio che l'utente modifichi la sola rappresentazione DOM senza aggiornare il modello canonico.
+5. La regressione browser effettiva è ancora da eseguire.
+
+**Valutazione:** v0.6.3 è una correzione candidata per il motore delle formule nei casi verificati, non una Fetta 1 completata né una release da pubblicare senza il successivo collaudo browser.

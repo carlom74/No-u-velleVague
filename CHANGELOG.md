@@ -106,3 +106,12 @@
 - Aggiunta la pagina browser `test/browser/id-regression.html` per la verifica di regressione sul corpus.
 - Aggiornati i moduli JavaScript compilati e la versione dell'interfaccia a 0.6.2.
 - Non modificata in questa versione la semantica delle doppie parentesi Normattiva: richiede un intervento dedicato sulle convenzioni di aggiornamento e sulle note.
+
+
+## v0.6.3 — Regressione funzionale e formule Fetta 1
+
+- Corrette le formule emendative per sostituzione testuale, sostituzione integrale, soppressione e inserimento di comma, nei casi coperti dal Catalogo v0.11.
+- La numerazione della partizione è resa esplicita nel testo formulare senza contaminare il testo canonico del nodo.
+- Aggiunto un test funzionale sul testo effettivo dell'A.S. 1308, articolo 1, comma 1, e una pagina browser per la prova con DOMParser e motore reali.
+- Aggiunti controlli unitari sulle formule; suite Fetta 1: 7/7 PASS.
+- La suite completa resta parzialmente bloccata dall'assenza locale della dipendenza `linkedom`; il test browser end-to-end è da eseguire in browser ordinario.

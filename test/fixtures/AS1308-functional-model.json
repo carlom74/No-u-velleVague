@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "AS1308-test",
+  "identita": {
+    "urn": null,
+    "titolo": "Disegno di legge AS 1308",
+    "tipo": "bill",
+    "numero": "1308",
+    "data": null,
+    "versione": null
+  },
+  "fonte": {
+    "tipo": "akn",
+    "acquisitaIl": "2026-11-16",
+    "nomeFile": "AS1308.akn"
+  },
+  "profilo": {
+    "id": "profilo-normativo-standard",
+    "commiNumerati": true,
+    "partizioni": [
+      "articolo",
+      "comma"
+    ],
+    "alfabetoLettere": [],
+    "numerazioneAggiuntiva": {
+      "primaPartizione": "zero-prefisso",
+      "dopoUltima": "bis-ter",
+      "intermedia": "sottoarticolazione",
+      "riusoNumeriAbrogati": false
+    },
+    "riferimenti": {
+      "articoloConCommaUnicoNonNumerato": "articolo"
+    }
+  },
+  "radice": {
+    "id": "atto",
+    "idInterno": "atto",
+    "tipo": "atto",
+    "etichetta": null,
+    "rubrica": null,
+    "testo": "",
+    "eId": null,
+    "identificativoSorgente": null,
+    "eIdDuplicato": false,
+    "origine": "akn",
+    "attributi": {},
+    "figli": [
+      {
+        "id": "art1",
+        "idInterno": "art1",
+        "tipo": "articolo",
+        "etichetta": "1",
+        "rubrica": null,
+        "testo": "",
+        "eId": null,
+        "identificativoSorgente": null,
+        "eIdDuplicato": false,
+        "origine": "akn",
+        "attributi": {},
+        "figli": [
+          {
+            "id": "art1-com1",
+            "idInterno": "art1-com1",
+            "tipo": "comma",
+            "etichetta": "1",
+            "rubrica": null,
+            "testo": "La rubrica del titolo IX- bis del libro secondo del codice penale è sostituita dalla seguente: « Dei delitti contro gli animali ».",
+            "eId": null,
+            "identificativoSorgente": null,
+            "eIdDuplicato": false,
+            "origine": "akn",
+            "attributi": {},
+            "figli": [],
+            "contenutoNonInterpretato": null,
+            "citato": false,
+            "metadati": {}
+          }
+        ],
+        "contenutoNonInterpretato": null,
+        "citato": false,
+        "metadati": {}
+      }
+    ],
+    "contenutoNonInterpretato": null,
+    "citato": false,
+    "metadati": {}
+  },
+  "diagnostica": [],
+  "indiceEid": {},
+  "statistiche": {
+    "nodi": 3,
+    "testoCaratteri": 130
+  }
+}
