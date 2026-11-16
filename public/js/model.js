@@ -120,7 +120,11 @@ function xmlNode(el, path, diagnostica, eidSeen) {
 }
 function stableToken(n, index) {
     const t = n.tipo;
-    const raw = (n.etichetta || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+    let label = (n.etichetta || '').trim();
+    // Le etichette AKN degli articoli possono includere la sigla redazionale (es. 'Art. 3').
+    if (t === 'articolo')
+        label = label.replace(/^art(?:icolo)?\.?\s*/i, '');
+    const raw = label.toLowerCase().replace(/[^a-z0-9]+/g, '');
     const prefix = { articolo: 'art', comma: 'com', lettera: 'let', numero: 'num', libro: 'lib', parte: 'par', titolo: 'tit', capo: 'cap', sezione: 'sez', allegato: 'all', 'testo-citato': 'cit' };
     if (t === 'atto')
         return 'atto';
@@ -130,7 +134,7 @@ function stableToken(n, index) {
         return `cit${index + 1}`;
     return `${prefix[t] || t}${raw || index + 1}`;
 }
-function assegnaIdStabili(n, parent = '') {
+function assegnaIdStabili(n, parent = '', wrappers = { value: 0 }) {
     const counts = new Map();
     n.figli.forEach((c, i) => {
         const base = stableToken(c, i);
@@ -138,12 +142,12 @@ function assegnaIdStabili(n, parent = '') {
         counts.set(base, count);
         const structural = !['elemento', 'atto'].includes(c.tipo);
         const nextPath = structural ? (parent ? `${parent}-${base}${count > 1 ? `-${count}` : ''}` : `${base}${count > 1 ? `-${count}` : ''}`) : parent;
-        c.id = structural ? nextPath : `${parent || 'atto'}-wrapper${i + 1}`;
+        c.id = structural ? nextPath : `atto-wrapper${++wrappers.value}`;
         if (c.citato || n.citato) {
             c.citato = true;
             c.metadati = { ...c.metadati, sottoalberoCitato: true };
         }
-        assegnaIdStabili(c, nextPath);
+        assegnaIdStabili(c, nextPath, wrappers);
     });
 }
 function finalize(a) {
