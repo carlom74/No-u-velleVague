@@ -1,0 +1,11 @@
+<!doctype html><html lang="it"><meta charset="utf-8"><title>Test browser Fetta 1</title><body><h1>Test browser Fetta 1</h1><pre id="out">In esecuzione…</pre><script type="module">
+import {daAkn,validaModello} from '../../public/js/model.js';
+const out=document.querySelector('#out');const results=[];const check=(name,fn)=>{try{fn();results.push(`PASS ${name}`)}catch(e){results.push(`FAIL ${name}: ${e.message}`)}};
+const xml=`<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0"><act><body><article eId="art_3"><num>Art. 3</num><heading>Oggetto</heading><paragraph eId="art_3__para_2"><num>2.</num><content><p>Testo del comma <quotedText><paragraph><num>1.</num><content><p>Testo citato.</p></content></paragraph></quotedText>.</p></content></paragraph></article></body></act></akomaNtoso>`;
+const a=daAkn(xml);const nodes=[];const walk=n=>{nodes.push(n);n.figli.forEach(walk)};walk(a.radice);
+check('ID semantico articolo',()=>{if(!nodes.some(n=>n.id==='art3'))throw Error('art3 assente')});
+check('ID semantico comma',()=>{if(!nodes.some(n=>n.id==='art3-com2'))throw Error('art3-com2 assente')});
+check('sottoalbero citato',()=>{if(!nodes.some(n=>n.tipo==='testo-citato'&&n.citato))throw Error('wrapper citato assente')});
+check('identificativi univoci',()=>{if(validaModello(a).some(x=>x.codice==='id-interno-duplicato'))throw Error('duplicati')});
+out.textContent=results.join('\n');
+</script></body></html>

@@ -96,7 +96,7 @@ function directText(el:Element):string {
  walk(el,true);
  return out.join('').replace(/[\t\r\n ]+/g,' ').replace(/\s+([,.;:!?])/g,'$1').trim();
 }
-function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<string,string[]>,sourcePath:number[]=[]):NodoNormativo {
+function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<string,string[]>):NodoNormativo {
  const local=localName(el); const tipo=MAP[local]||'sconosciuto';
  const eid=el.getAttribute('eId'); const sourceId=el.getAttribute('id');
  const id=`${path}/${slug(sourceId||eid||`${local}-${Array.from(el.parentElement?.children||[]).indexOf(el)+1}`)}`;
@@ -115,7 +115,7 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
  const children=childElements.filter(c=>
   ((!IGNORE.has(localName(c))) || (localName(c)==='presentation' && contieneTabella(c)))
   && !['num','heading'].includes(localName(c))
- ).map((c,i)=>xmlNode(c,`${id}/${localName(c)}-${i+1}`,diagnostica,eidSeen,[...sourcePath,childElements.indexOf(c)]));
+ ).map((c,i)=>xmlNode(c,`${id}/${localName(c)}-${i+1}`,diagnostica,eidSeen));
  const label=num?.textContent?.replace(/\s+/g,' ').trim()||null;
  const x=node(id,tipo,label,directText(el),'akn',children);
  x.eId=eid; x.identificativoSorgente=sourceId||null;
@@ -126,7 +126,6 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
   x.contenutoNonInterpretato=new XMLSerializer().serializeToString(el);
   diagnostica.push({codice:'akn-elemento-non-mappato',severita:'info',messaggio:`Elemento AKN non mappato: ${local}; conservato integralmente.`,percorso:id});
  }
- x.metadati={...x.metadati,nomeElementoAkn:local,percorsoXml:sourcePath};
  if(local==='hcontainer'&&el.getAttribute('name'))x.metadati={...x.metadati,nomeContenitore:el.getAttribute('name')};
  // Conserva il nome locale AKN per consentire audit e interrogazioni strutturali
  // senza confondere righe/celle con partizioni normative.
@@ -135,7 +134,30 @@ function xmlNode(el:Element,path:string,diagnostica:Diagnostica[],eidSeen:Map<st
  if(local==='quotedText'||local==='quotedStructure'||local==='quotedBlock')x.citato=true;
  return x;
 }
+
+function stableToken(n:NodoNormativo,index:number):string {
+ const t=n.tipo; const raw=(n.etichetta||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+ const prefix:Record<string,string>={articolo:'art',comma:'com',lettera:'let',numero:'num',libro:'lib',parte:'par',titolo:'tit',capo:'cap',sezione:'sez',allegato:'all','testo-citato':'cit'};
+ if(t==='atto')return 'atto';
+ if(t==='elemento')return `el${index+1}`;
+ if(t==='testo-citato')return `cit${index+1}`;
+ return `${prefix[t]||t}${raw||index+1}`;
+}
+function assegnaIdStabili(n:NodoNormativo,parent=''):void {
+ const counts=new Map<string,number>();
+ n.figli.forEach((c,i)=>{
+  const base=stableToken(c,i); const count=(counts.get(base)||0)+1;counts.set(base,count);
+  const structural = !['elemento','atto'].includes(c.tipo);
+  const nextPath = structural ? (parent ? `${parent}-${base}${count>1?`-${count}`:''}` : `${base}${count>1?`-${count}`:''}`) : parent;
+  c.id = structural ? nextPath : `${parent || 'atto'}-wrapper${i+1}`;
+  if(c.citato || n.citato){ c.citato=true; c.metadati={...c.metadati,sottoalberoCitato:true}; }
+  assegnaIdStabili(c,nextPath);
+ });
+}
+
+
 function finalize(a:AttoCanonico):AttoCanonico {
+ assegnaIdStabili(a.radice,'');
  const ids=new Map<string,string[]>(); let count=0,chars=0;
  const walk=(n:NodoNormativo)=>{count++;chars+=n.testo.length;if(n.eId){const xs=ids.get(n.eId)||[];xs.push(n.id);ids.set(n.eId,xs);} n.figli.forEach(walk);}; walk(a.radice);
  for(const [eid,paths] of ids) if(paths.length>1){paths.forEach(p=>{const n=findNode(a.radice,p);if(n)n.eIdDuplicato=true;});a.diagnostica.push({codice:'eid-duplicato',severita:'avviso',messaggio:`eId "${eid}" presente ${paths.length} volte: conservate tutte le occorrenze.`});}
@@ -154,6 +176,8 @@ export function daAkn(xml:string,options:{urn?:string|null;nomeFile?:string|null
  const title=byLocal('docTitle')?.textContent?.trim()||byLocal('publication')?.textContent?.trim()||null;
  // Il workflow è metadato del ciclo di vita e non appartiene all'albero normativo.
  // Lo conserviamo in forma strutturata sul nodo radice, senza classificarlo come partizione.
+ const docKind=byLocal('bill')?'bill':byLocal('act')?'act':null;
+ if(docKind)radice.metadati={...radice.metadati,tipoDocumentoAkn:docKind};
  const workflow=byLocal('workflow');
  if(workflow){
   const events=Array.from(workflow.children).filter(e=>localName(e as Element)==='step').map(e=>{const x=e as Element;return {id:x.getAttribute('id'),date:x.getAttribute('date'),actor:x.getAttribute('actor'),outcome:x.getAttribute('outcome'),href:x.getAttribute('href')}});
