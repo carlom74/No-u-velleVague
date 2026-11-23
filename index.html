@@ -1,67 +1,17 @@
-<!doctype html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Prototipo autocontenuto per acquisire e strutturare testi normativi da Normattiva." />
-  <title>Editor di novelle normative — prototipo</title>
-  <link rel="stylesheet" href="./styles.css?v=0.6.3" />
-</head>
-<body>
-  <header class="topbar">
-    <div class="brandmark">N</div>
-    <div><div class="eyebrow">PROTOTIPO <span data-app-version>0.6.3</span> · ISPEZIONE MODELLO</div><h1>Editor di novelle normative</h1></div>
-    <div class="top-actions"><a class="pill" href="./test/browser/model-inspector.html" target="_blank" rel="noreferrer">Ispeziona modello AKN</a><a class="pill" href="./fetta1.html">Editor Fetta 1</a><a class="pill" href="./fetta1.html">Editor Fetta 1</a><span class="pill">Client-side</span><span class="pill">Nessun server</span></div>
-  </header>
-  <main class="layout">
-    <aside class="sidebar">
-      <div class="step active"><span>1</span><div><strong>Fonte normativa</strong><small>Estremi e acquisizione</small></div></div>
-      <div class="step"><span>2</span><div><strong>Struttura</strong><small>Articoli e partizioni</small></div></div>
-      <div class="step"><span>3</span><div><strong>Intervento</strong><small>Novella normativa</small></div></div>
-      <div class="side-note"><strong>Principio di funzionamento</strong><p>Il testo viene acquisito dalla fonte, parsato nel browser e trasformato in un DOM navigabile. I dati restano nella sessione locale.</p></div>
-    </aside>
-    <section class="main-panel">
-      <div class="intro"><div class="eyebrow">PASSO 1 DI 3</div><h2>Seleziona l’atto da acquisire</h2><p>Indica gli estremi dell’atto e la versione da consultare. Il prototipo acquisisce i testi e costruisce una rappresentazione normativa canonica; la ricognizione dell’intero atto è sperimentale perché l’API può richiedere più chiamate.</p></div>
-      <form id="act-form" class="form-card">
-        <div class="field-grid">
-          <label class="field"><span>Tipo di atto</span><select id="act-type" required>
-            <option value="legge">Legge</option>
-            <option value="decreto.legge">Decreto-legge</option>
-            <option value="decreto.legislativo">Decreto legislativo</option>
-            <option value="decreto.del.presidente.della.repubblica">D.P.R.</option>
-            <option value="regio.decreto">Regio decreto</option>
-            <option value="regio.decreto.legge">Regio decreto-legge</option>
-            <option value="legge.costituzionale">Legge costituzionale</option>
-            <option value="costituzione">Costituzione</option>
-            <option value="decreto.ministeriale">Decreto ministeriale</option>
-          </select></label>
-          <label class="field"><span>Data dell’atto</span><input id="act-date" type="date" value="1990-08-07" required /></label>
-          <label class="field"><span>Numero</span><input id="act-number" type="number" min="1" value="241" required /></label>
-          <label class="field"><span>Articolo iniziale</span><input id="article-number" type="text" value="1" placeholder="es. 1, 13-bis" /></label>
-        </div>
-        <div class="field-grid lower-grid">
-          <label class="field"><span>Versione del testo</span><select id="version-mode"><option value="vigente">Vigente alla data odierna</option><option value="originale">Testo originario</option><option value="data">Vigente a una data specifica</option></select></label>
-          <label class="field" id="vigence-field" hidden><span>Data di vigenza</span><input id="vigence-date" type="date" /></label>
-          <label class="field"><span>Ambito di acquisizione</span><select id="scope"><option value="article">Un articolo</option><option value="act">Intero atto (sperimentale)</option></select></label>
-        </div>
-        <div class="urn-preview"><span>URN generata</span><code id="urn-preview">urn:nir:stato:legge:1990-08-07;241</code><button type="button" id="copy-urn" class="link-button">Copia</button></div>
-        <div class="form-actions"><button type="button" id="load-sample" class="button secondary">Carica esempio locale</button><button type="submit" id="download-btn" class="button primary"><span class="button-icon">↓</span> Acquisisci e parsa</button></div>
-        <p class="disclaimer">Fonte: dati.normattiva.it — testi non autentici a fini informativi. Verificare sempre il testo ufficiale in Gazzetta Ufficiale. <a href="https://dati.normattiva.it/Come-scaricare-i-dati" target="_blank" rel="noreferrer">Informazioni sul riuso dei dati</a>.</p>
-      </form>
-      <div id="status" class="status" role="status" aria-live="polite"><span class="status-dot"></span><div><strong>Pronto</strong><p>Inserisci gli estremi e avvia l’acquisizione. In alternativa, prova il campione locale incluso nel pacchetto.</p></div></div>
-      <section id="results" class="results" hidden>
-        <div class="result-header"><div><div class="eyebrow">RISULTATO DELL’ACQUISIZIONE</div><h2 id="result-title">Articolo acquisito</h2><p id="result-subtitle" class="muted"></p></div><div id="validation-badge" class="validation-badge"></div></div>
-        <div class="metrics" id="metrics"></div>
-        <div class="workspace">
-          <section class="tree-panel"><div class="panel-heading"><h3>DOM normativo</h3><span id="tree-count" class="muted"></span></div><div id="tree" class="tree" role="tree"></div></section>
-          <section class="detail-panel"><div class="panel-heading"><h3>Partizione selezionata</h3><span id="selected-type" class="muted">Nessuna selezione</span></div><div id="selected-detail" class="selected-detail"><p class="muted">Seleziona un nodo dell’albero per vedere il testo e i metadati.</p></div></section>
-        </div>
-        <details class="raw-panel"><summary>HTML originale ricevuto da Normattiva</summary><pre id="raw-html"></pre></details>
-        <details class="raw-panel"><summary>Dettagli tecnici della risposta</summary><pre id="raw-meta"></pre></details>
-      </section>
-    </section>
-  </main>
-  <footer><span>Editor di novelle normative · prototipo <span data-app-version>0.6.3</span></span><span>Il testo acquisito non viene inviato a un server applicativo.</span></footer>
-  <script type="module" src="./app.js?v=0.6.3"></script>
-</body>
-</html>
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Editor client-side per la novellazione di un atto normativo vigente."><title>No(u)velle vague — 0.7</title><link rel="stylesheet" href="./styles.css"><link rel="stylesheet" href="./v07.css"></head><body>
+<header class="nv-top"><a class="nv-brand" href="./"><span class="nv-mark">N</span><span><b>No(u)velle vague</b><small>Editor di novellazione normativa</small></span></a><div class="nv-headmeta"><span id="version-pill">v0.7.0</span><span id="save-status">Nessun progetto aperto</span></div></header>
+<main class="nv-shell">
+<section id="welcome" class="nv-welcome"><div><p class="nv-kicker">NOVELLAZIONE DI UN ATTO VIGENTE</p><h1>Dal testo vigente<br>al documento modificativo.</h1><p class="nv-lead">Importa un atto Normattiva, lavora direttamente sul testo e genera una bozza di novelle tracciabile.</p></div><div class="nv-start"><label class="nv-upload"><span class="nv-upload-icon">＋</span><b>Importa un file Normattiva</b><small>XML / Akoma Ntoso (.xml, .akn)</small><input id="file-input" type="file" accept=".xml,.akn,application/xml,text/xml"></label><button id="load-sample" class="nv-button nv-secondary">Apri il campione L. 241/1990</button><p class="nv-note">L'acquisizione API Normattiva articolo per articolo non certifica da sola la completezza dell'atto. Per il flusso completo usa un'esportazione XML integrale.</p></div></section>
+<section id="workspace" hidden>
+<div class="nv-actbar"><div><div class="nv-kicker">ATTO IN LAVORAZIONE</div><h1 id="act-title">Atto normativo</h1><p id="act-meta"></p></div><div class="nv-act-actions"><button id="export-project" class="nv-button nv-secondary">Esporta progetto</button><label class="nv-button nv-secondary nv-file-button">Importa progetto<input id="project-input" type="file" accept=".nvw,.json,application/json"></label><button id="reset-project" class="nv-button nv-quiet">Chiudi</button></div></div>
+<div id="import-diagnostics" class="nv-integrity"></div>
+<div class="nv-workgrid">
+<aside class="nv-sidebar"><div class="nv-panel-head"><b>Struttura dell'atto</b><span id="tree-count"></span></div><input id="tree-search" class="nv-search" placeholder="Cerca nell'indice…"><nav id="tree" class="nv-tree" aria-label="Indice dell'atto"></nav></aside>
+<section class="nv-document"><div class="nv-doc-toolbar"><div><b>Testo vigente</b><span id="doc-status">Seleziona una partizione o un testo</span></div><input id="text-search" class="nv-search nv-search-inline" placeholder="Cerca nel testo…"></div><div id="document-view" class="nv-document-view"></div></section>
+<aside class="nv-inspector"><section class="nv-panel"><div class="nv-panel-head"><b>Bersaglio selezionato</b><span id="target-type" class="nv-tag">—</span></div><h3 id="target-locator">Nessuna selezione</h3><p id="target-text" class="nv-target-text">Seleziona una partizione nel testo o nell'indice.</p><div id="operation-form" class="nv-operation-form" hidden><label>Operazione<select id="operation"><option value="sostituzione_testo">Sostituisci parole/espressione</option><option value="soppressione_testo">Sopprimi parole/espressione</option><option value="inserimento_testo">Inserisci testo dopo l'ancora</option><option value="sostituzione_partizione">Sostituisci integralmente la partizione</option><option value="abrogazione">Abroga la partizione</option><option value="sostituzione_rubrica">Sostituisci la rubrica</option><option value="soppressione_rubrica">Sopprimi la rubrica</option></select></label><label id="old-text-wrap">Testo esatto da individuare<textarea id="old-text" rows="2" placeholder="Seleziona una frase o incolla il testo esatto"></textarea></label><label id="new-text-wrap">Nuovo testo<textarea id="new-text" rows="4" placeholder="Scrivi il testo sostitutivo o da inserire"></textarea></label><div id="validation-message" class="nv-validation"></div><button id="add-intervention" class="nv-button nv-primary">Registra intervento</button></div></section>
+<section class="nv-panel"><div class="nv-panel-head"><b>Registro interventi</b><span id="registry-count" class="nv-count">0</span></div><div id="registry" class="nv-registry"><p class="nv-empty">Nessun intervento registrato.</p></div></section>
+<section class="nv-panel"><div class="nv-panel-head"><b>Scenari</b><button id="new-scenario" class="nv-mini">＋ Nuovo</button></div><select id="scenario-select" class="nv-select"></select><div id="scenario-list" class="nv-scenario-list"></div><div id="scenario-validation" class="nv-validation"></div><button id="apply-scenario" class="nv-button nv-secondary" disabled>Simula scenario</button></section></aside>
+</div>
+<section class="nv-results"><div class="nv-aggregation" id="aggregation-panel" hidden><b>Aggregazioni redazionali proposte</b><div id="aggregation-list"></div></div><div class="nv-results-head"><div><div class="nv-kicker">RISULTATI DERIVATI</div><h2>Simulazione e documento modificativo</h2></div><div class="nv-tabs"><button class="active" data-tab="diff">Testo risultante</button><button data-tab="novella">Documento di modifiche</button><button data-tab="audit">Tracciabilità</button></div></div><div id="result-diff" class="nv-result-pane"></div><div id="result-novella" class="nv-result-pane" hidden></div><div id="result-audit" class="nv-result-pane" hidden></div><div class="nv-result-actions"><button id="download-text" class="nv-button nv-primary" disabled>Esporta documento modificativo (.txt)</button><button id="download-html" class="nv-button nv-secondary" disabled>Esporta HTML stampabile</button></div></section>
+</section></main><footer class="nv-footer">No(u)velle vague · Elaborazione locale nel browser · Nessun backend · <span id="footer-version">0.7.0</span></footer>
+<script type="module" src="./v07-app.js"></script></body></html>

@@ -1,129 +1,87 @@
-# No(u)velle vague — editor di novelle normative (prototipo 0.5.4)
+# No(u)velle vague — Release 0.7.0 (candidate)
 
-Prototipo statico, senza backend applicativo e senza database. Funziona nel browser e può essere pubblicato su GitHub Pages, Cloudflare Pages o qualsiasi hosting statico HTTPS.
+Editor client-side per la novellazione di un singolo atto normativo vigente. La release deriva dalla baseline software 0.6.5 e mantiene il parser e il modello canonico AKN già presenti.
 
-## Funzioni incluse
+## Avvio rapido
 
-- modello normativo canonico indipendente dalla fonte;
-- importazione sperimentale di Akoma Ntoso XML nel browser;
-- test browser dei quattro campioni AKN inclusi nel repository;
-- esploratore del modello canonico con albero espandibile, filtro, dettaglio dei nodi, attributi XML, metadati, diagnostiche e anteprima delle tabelle.
-
-- selezione del tipo, data e numero dell'atto;
-- generazione dell'URN di base;
-- acquisizione di un articolo tramite l'API Open Data Normattiva;
-- selezione del testo vigente oggi, originario o vigente a una data indicata;
-- parsing dell'HTML con il parser del progetto e costruzione di un albero navigabile di commi, lettere e numeri;
-- visualizzazione degli avvisi, della classificazione preliminare di affidabilità, dell'HTML originale e dei metadati;
-- esempio locale basato sul campione della legge 241/1990, utile anche quando l'API non è raggiungibile;
-- modalità sperimentale per ricognizione dell'atto tramite richieste successive articolo per articolo.
-
-## Avvertenze importanti
-
-1. L'API Normattiva espone contenuti articolo per articolo. La modalità «Intero atto» prova a enumerare gli articoli numerati, ma non garantisce di individuare articoli con suffissi, gruppi strutturati, titoli, capi o allegati. Non usare la ricognizione come indice completo dell'atto.
-2. Il browser deve poter raggiungere l'API e l'API deve consentire la richiesta cross-origin (CORS). Se non è così, il prototipo mostra l'errore e resta utilizzabile con il campione locale. Un eventuale proxy può essere valutato successivamente, ma introdurrebbe un componente server.
-3. L'output del parser è un DOM applicativo ricostruito dall'HTML di Normattiva. La conservazione testuale e l'assenza di avvisi non equivalgono a certificazione giuridica.
-4. I testi Normattiva sono riportati con attribuzione alla fonte e avvertenza di carattere non autentico. Consultare il testo ufficiale in Gazzetta Ufficiale nei casi rilevanti.
-5. Prima della redistribuzione istituzionale va chiarita la licenza del codice parser derivato da PArSe, come segnalato nel README originario.
-
-## Esecuzione locale
-
-È sufficiente servire la cartella via HTTP/HTTPS. Non aprire `index.html` direttamente come `file://`, perché i moduli JavaScript e il caricamento del campione locale potrebbero essere bloccati dal browser.
-
-Con Python 3:
+Non aprire `index.html` con `file://`: usare un server statico locale.
 
 ```bash
 python3 -m http.server 8080
 ```
 
-Aprire `http://localhost:8080`.
+Aprire `http://localhost:8080/`.
 
-## Deploy gratuito
+Per una prima prova selezionare **Apri il campione L. 241/1990** oppure importare un file XML/Akoma Ntoso integrale proveniente da Normattiva.
 
-### GitHub Pages
-1. Creare un repository e caricare tutti i file di questa cartella nella root.
-2. In **Settings → Pages**, selezionare il branch principale e la cartella `/ (root)`.
-3. Attendere il deploy e aprire l'URL HTTPS pubblicato.
+## Pubblicazione GitHub Pages
 
-### Cloudflare Pages
-1. Creare un progetto Pages collegato al repository.
-2. Impostare la directory di output alla root (`/`) e nessun comando di build.
-3. Pubblicare.
+1. Estrarre il contenuto dello ZIP nella root del repository (mantenendo la struttura delle cartelle).
+2. Pubblicare il branch e la cartella root con GitHub Pages.
+3. Aprire l'URL Pages del repository. Gli asset sono richiamati con percorsi relativi.
+
+L'applicazione non richiede backend, proxy, database remoto o servizi esterni. I testi sono elaborati nel browser.
+
+## Funzioni implementate
+
+- Importazione locale XML/AKN tramite `DOMParser` e parser canonico della baseline.
+- Fixture locale L. 241/1990 vigente al 1° gennaio 2026.
+- Indice gerarchico e visualizzazione integrale dei nodi interpretati.
+- Selezione diretta di una partizione e selezione di testo con mouse per predisporre l'ancora.
+- Operazioni: abrogazione, sostituzione integrale, sostituzione/soppressione di parole, inserimento dopo un'ancora, modifica/soppressione rubrica.
+- Validazione intrinseca separata dalla compatibilità con gli altri interventi.
+- Registro permissivo, relazioni di interferenza e scenari alternativi.
+- Simulazione su copia dell'atto base.
+- Proposte di aggregazione per interventi riferiti allo stesso articolo, accettabili/rifiutabili.
+- Documento modificativo derivato dal registro, con mapping blocco-interventi.
+- Esportazione TXT e HTML stampabile.
+- Salvataggio locale automatico, esportazione/importazione progetto `.nvw` (JSON versionato).
+
+## Limiti noti — leggere prima di utilizzare
+
+Questa è una **release candidate funzionale**, non ancora una release che soddisfa integralmente tutti i criteri della Direttiva v1.0.
+
+1. **Acquisizione Normattiva:** il percorso end-to-end verificabile usa un XML/AKN integrale importato localmente. Non è implementata una ricerca completa dell'atto via API: l'endpoint Normattiva noto restituisce un articolo per chiamata e non espone un indice generale. L'app non dichiara quindi di aver ricostruito automaticamente tutti gli articoli a partire dai soli estremi.
+2. **Completezza della fonte:** viene parsato tutto il file caricato; non è possibile attestare automaticamente che il file fornito contenga tutte le partizioni pubblicate. La verifica di completezza rispetto alla fonte ufficiale resta in capo al collaudo.
+3. **Operazioni del Catalogo:** sono implementate le famiglie elencate sopra, non tutte le 87 voci del Catalogo v0.11. Le formule candidate sono marcate come tali; le rubriche restano non validate sul piano redazionale.
+4. **Selezione testuale:** le ancore operano sul testo diretto del nodo selezionato. Non è ancora disponibile una selezione robusta di intervalli che attraversino più nodi inline, né un resolver con disambiguazione avanzata per tutte le forme del Metamodello.
+5. **Conflitti:** sono implementati i conflitti certi sullo stesso bersaglio e la relazione gerarchica antenato/discendente. La tassonomia completa delle interferenze potenziali, dipendenze, ordine e ricalcolo storico non è ancora completa.
+6. **Applicazione:** la simulazione applica le operazioni implementate su una copia. La gestione generale di patch multiple su intervalli disgiunti nello stesso nodo richiede ulteriore estensione.
+7. **Composizione:** il compositore produce formule per il nucleo implementato. Non copre tutte le regole di numerazione, i casi di commi non numerati, le partizioni superiori, le formule candidate e tutte le regole di layout del Catalogo.
+8. **Persistenza:** il progetto `.nvw` è JSON versionato, non archivio ZIP; la persistenza automatica usa IndexedDB, con fallback a localStorage, e non sincronizza dispositivi.
+9. **Collaudo browser:** è inclusa una pagina E2E. L'esecuzione Chromium automatizzata non è stata completata nell'ambiente di generazione; va eseguita dall'utente in locale o su GitHub Pages.
+10. **Accessibilità:** layout responsive e controlli semantici di base; non è stato svolto un audit WCAG completo.
+
+## Test automatici
+
+Richiede Node.js 22 o successivo.
+
+```bash
+npm test
+npm run build
+```
+
+`npm test` esegue la suite 0.7 indipendente da dipendenze esterne. `npm run build` esegue un controllo statico degli asset e dell'entry point (non una compilazione TypeScript).
+
+Per la pagina browser E2E:
+
+```bash
+python3 -m http.server 8080
+```
+
+Aprire `http://localhost:8080/test/browser/novellazione-e2e.html`.
 
 ## Struttura
 
-- `index.html`: interfaccia
-- `styles.css`: stile responsive
-- `app.js`: orchestrazione API, UI e visualizzazione DOM
-- `public/js/parser.js`, `public/js/lessico.js`: parser già compilato per il browser
-- `public/campioni-normattiva.json`: campione locale
-- `src/`: sorgenti TypeScript del parser
+- `index.html`, `v07-app.js`, `v07.css`: applicazione 0.7.
+- `public/js/novella-core.js`: motore di interventi, conflitti, scenari e composizione.
+- `public/js/model.js`, `parser.js`, `lessico.js`: moduli browser ereditati dalla baseline 0.6.5.
+- `src/`: sorgenti TypeScript originali della baseline.
+- `test/v07-core.test.mjs`: test unitari del nuovo motore.
+- `test/v07-ui-contract.test.mjs`: test del contratto UI.
+- `test/browser/novellazione-e2e.html`: pagina di regressione browser.
+- `test/fixtures/atti/`: corpus XML/AKN di regressione e fixture principale.
 
-Runtime: nessun framework e nessuna dipendenza remota. Il parser viene eseguito nel browser.
+## Stato del rilascio
 
-
-## Ricognizione dell'intero atto (prototipo)
-
-La modalità «Intero atto» non impone più un numero massimo fisso di articoli. Parte dall'articolo indicato e procede in sequenza; termina dopo quattro numeri consecutivi che l'API non riesce ad acquisire. Durante la scansione mostra il numero raggiunto, gli articoli acquisiti e una stima della dimensione HTML. Oltre determinate soglie informative avvisa che la visualizzazione potrebbe rallentare, senza interrompere automaticamente l'acquisizione.
-
-**Limite noto:** questa è una ricognizione best-effort della sequenza numerica, non un indice normativo completo. Non garantisce il reperimento di articoli con suffisso (es. `80-bis`), allegati, partizioni strutturate per titolo/capo o articoli temporaneamente non raggiungibili. Quattro risposte consecutive non acquisibili sono un criterio di arresto euristico, non una prova formale della fine dell'atto. I testi restano da verificare prima di usarli per generare novelle.
-
-## Modello normativo canonico (v0.2)
-
-Il modulo `src/model.ts` introduce una rappresentazione indipendente dalla fonte di acquisizione. Il flusso Normattiva esistente produce ora anche `canonical`, mediante `daArticoliNormattiva()`. Il modello conserva identità/versione dell'atto, profilo strutturale, gerarchia, provenienza, diagnostica, statistiche e indice degli `eId` (incluse le collisioni, che non vengono risolte eliminando nodi).
-
-È disponibile anche `daAkn(xml, options)`, adattatore preliminare client-side basato su `DOMParser`. Accetta XML AKN, conserva il documento originale e costruisce una gerarchia canonica; gli elementi non riconosciuti sono segnalati/conservati, non interpretati arbitrariamente. L'interfaccia di caricamento AKN e l'inserimento URN diretta restano incrementi successivi.
-
-Per compilare: `npm run build`. Il modulo browser compilato è `public/js/model.js`. Test specifici: `node --experimental-strip-types --test test/model.test.ts`.
-
-### Modello canonico e importazione AKN
-
-Il modulo `src/model.ts` definisce il modello normativo canonico e gli adattatori per Normattiva HTML e Akoma Ntoso XML. Nell'importazione AKN sono conservati sia l'eventuale `eId` sia l'identificativo XML `id` (campo `identificativoSorgente`); i due identificativi non sono confusi. Gli elementi non ancora classificati sono conservati come frammenti XML e accompagnati da diagnostica.
-
-Il modulo definisce inoltre `BersaglioNormativo` e `AncoraTestuale`. `risolviAncora()` non sceglie automaticamente tra più occorrenze: restituisce lo stato `ambigua`, salvo che il contesto o il numero di occorrenza rendano univoca la selezione.
-
-### Verifica browser dell'importazione AKN
-È disponibile `test/browser/domparser-check.html`, una pagina autonoma che importa i quattro campioni AKN inclusi in `test/fixtures/akn/`, li analizza con il `DOMParser` nativo e verifica testo dei commi, identificativi sorgente, validazione del modello e tabelle del testo a fronte.
-
-Per eseguirla in locale, dalla directory del repository avviare `npm run dev` e aprire `http://localhost:8080/test/browser/domparser-check.html`. La pagina mostra un report JSON e imposta `data-status="PASS"` o `data-status="FAIL"` sull'elemento HTML. La stessa pagina può essere aperta su GitHub Pages dopo aver pubblicato il repository.
-
-
-## Audit strutturale AKN (v0.5)
-
-Il modulo `src/audit.ts` aggiunge `analizzaAkn(xml)`, un inventario lessicale client-side degli elementi XML. Classifica gli elementi in: radice/documento, struttura normativa, contenitori, presentazione, metadati, supporto editoriale e non classificati. Segnala inoltre le partizioni strutturali prive di testo. La pagina `test/browser/domparser-check.html` include ora, per ciascun campione, il riepilogo dell'audit insieme ai controlli del modello canonico.
-
-Il modello riconosce inoltre gli elementi inline/presentazionali presenti nel corpus (ad es. `i`, `b`, `span`, `eol`, `img`) come elementi AKN noti, senza confonderli con partizioni normative e senza segnalarli come elementi XML sconosciuti. Il frammento XML originale resta conservato nell'atto canonico.
-
-**Limite:** l'audit è un inventario e una classificazione preliminare del corpus, non è una validazione XSD, non attesta la conformità complessiva ad Akoma Ntoso e non dimostra da solo la completezza semantica della gerarchia normativa.
-
-
-## v0.5.1 – Audit contestuale e conservazione
-
-La v0.5.1 raffina l'audit AKN distinguendo il `step` del `workflow` dalle partizioni normative vuote. Gli eventi del workflow sono conservati nei metadati della radice del modello. L'audit descrive inoltre righe, celle e testo delle tabelle; il test browser confronta il testo delle celle XML con quello acquisito nel modello canonico.
-
-La verifica non equivale a validazione XSD né attesta da sola la completezza semantica dell'importazione.
-
-
-## Versione applicativa
-
-La versione applicativa è definita in un unico punto (`public/js/version.js`) e riportata automaticamente nella home page e nel report del test browser. Il report espone separatamente `appVersion`, `modelVersion`, `auditVersion` e `testVersion`. La versione del modello indica lo schema canonico (`1.0.0`), non la versione del rilascio applicativo.
-
-## Conservazione delle tabelle AKN (v0.5.3)
-
-L'adattatore AKN conserva gli elementi `table`, `tr`, `td` e `th` nell'albero canonico. I nodi mantengono il tipo canonico previsto (tabella o elemento) e riportano in `metadati.nomeElementoAkn` il nome locale AKN, così da rendere verificabili righe e celle senza assimilare le celle a partizioni normative. Il testo di ciascuna cella è estratto attraversando i contenitori e gli elementi inline.
-
-
-La versione 0.5.3 corregge la conservazione delle tabelle AKN nel modello canonico e applica URL versionati alle risorse statiche per ridurre gli effetti delle cache del browser/CDN.
-
-
-## Ispezione del modello canonico (v0.5.4)
-
-Dalla barra superiore della home page aprire **Ispeziona modello AKN**. La pagina `test/browser/model-inspector.html` consente di:
-
-- caricare uno dei quattro campioni AKN inclusi oppure un file `.akn`/`.xml` locale;
-- esplorare e filtrare l'albero completo del modello canonico;
-- espandere o comprimere i rami;
-- selezionare un nodo e consultarne testo, tipo, etichetta, rubrica, `eId`, identificativo sorgente, attributi XML e metadati;
-- visualizzare l'anteprima delle tabelle e le diagnostiche del documento.
-
-La pagina usa il `DOMParser` nativo e l'adattatore `daAkn` nel browser. Non introduce framework, servizi remoti o componenti server. Il caricamento di file locali avviene tramite selezione esplicita dell'utente; i campioni inclusi sono richiesti dalla stessa origine GitHub Pages.
+Vedere `RELEASE-STATUS.md`, `TEST-REPORT-V0.7.0.md` e `COLLAUDO-MANUALE-V0.7.0.md`. Non usare il documento modificativo generato come testo normativo validato senza revisione redazionale e giuridica.

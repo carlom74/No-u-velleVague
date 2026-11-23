@@ -1,15 +1,14 @@
 {
-  "name": "novelle-editor",
-  "version": "0.6.5",
+  "name": "no-u-velle-vague",
+  "version": "0.7.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json && cp build/parser.js public/js/parser.js && cp build/lessico.js public/js/lessico.js && cp build/model.js public/js/model.js && cp build/audit.js public/js/audit.js && cp build/engine.js public/js/engine.js && cp build/catalogo-fetta1.js public/js/catalogo-fetta1.js",
-    "dev": "python3 -m http.server 8080",
-    "test": "node --experimental-strip-types --test test/*.test.ts"
+    "test": "node --test test/v07-core.test.mjs test/v07-ui-contract.test.mjs test/v07-corpus-contract.test.mjs",
+    "test:legacy": "node --experimental-strip-types --test test/*.test.ts",
+    "test:browser": "python3 -m http.server 8080",
+    "build": "node scripts/build-check.mjs",
+    "dev": "python3 -m http.server 8080"
   },
-  "devDependencies": {
-    "typescript": "^5.8.3",
-    "linkedom": "^0.18.0"
-  }
+  "devDependencies": {"typescript":"^5.8.3","linkedom":"^0.18.0"}
 }
